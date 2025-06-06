@@ -150,11 +150,6 @@ popupCloseBtn.addEventListener("click", () => {
 // 新規登録画面表示 & 登録処理
 // ------------------------------
 addNewBtn.addEventListener("click", () => {
-  // 新規登録時はデータ全部クリア
-  items = [];
-  saveToStorage();
-  renderList();
-
   resetForm();
   formOverlay.classList.remove("hidden");
 });
