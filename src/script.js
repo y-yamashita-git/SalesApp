@@ -1,68 +1,183 @@
-let items = [];
-const STORAGE_KEY = "kaiko_list";
+// ------------------------------
+// グローバル変数・DOM取得
+// ------------------------------
+const tabKaiko = document.getElementById("tabKaiko");
+const tabUriko = document.getElementById("tabUriko"); // 今回使わないが設置のみ
+const sectionKaiko = document.getElementById("sectionKaiko");
+const sectionUriko = document.getElementById("sectionUriko");
 
-document.addEventListener("DOMContentLoaded", () => {
-  requestNotificationPermission();
-  registerServiceWorker();
+const listBody = document.getElementById("listBody");
+const addNewBtn = document.getElementById("addNewBtn");
+
+const formOverlay = document.getElementById("formOverlay");
+const formCancelBtn = document.getElementById("formCancelBtn");
+const okFormBtn = document.getElementById("okFormBtn");
+
+const circleInput = document.getElementById("circleName");
+const spaceInput = document.getElementById("spaceNumber");
+const memoInput = document.getElementById("memo");
+const reserveCheck = document.getElementById("reserveCheck");
+const timeInput = document.getElementById("timeInput");
+
+const popupOverlay = document.getElementById("popupOverlay");
+const popupCloseBtn = document.getElementById("popupCloseBtn");
+const popupCircle = document.getElementById("popupCircle");
+const popupSpace = document.getElementById("popupSpace");
+const popupMemo = document.getElementById("popupMemo");
+const popupStar = document.getElementById("popupStar");
+const popupTime = document.getElementById("popupTime");
+
+let items = []; // 買い物リスト全件
+
+// ------------------------------
+// 初期化処理
+// ------------------------------
+window.addEventListener("load", () => {
   loadFromStorage();
   renderList();
-  setNotificationChecker();
+  registerServiceWorker();
+  requestNotificationPermission();
+});
 
-  const tabs = document.querySelectorAll(".tab");
-  const tabContents = document.querySelectorAll(".tab-content");
-  const reserveCheck = document.getElementById("reserveCheck");
-  const timeInput = document.getElementById("timeInput");
-  const addNewBtn = document.getElementById("addNew");
-  const formOverlay = document.getElementById("formOverlay");
-  const popupOverlay = document.getElementById("popupOverlay");
-  const okFormBtn = document.getElementById("okForm");
-  const cancelFormBtn = document.getElementById("cancelForm");
-  const closePopupBtn = document.getElementById("closePopup");
-  const buyListBody = document.getElementById("buyListBody");
+// ------------------------------
+// タブ切替処理（買い子/売り子）
+// ------------------------------
+tabKaiko.addEventListener("click", () => {
+  tabKaiko.classList.add("active");
+  tabUriko.classList.remove("active");
+  sectionKaiko.classList.remove("hidden");
+  sectionUriko.classList.add("hidden");
+});
+tabUriko.addEventListener("click", () => {
+  tabUriko.classList.add("active");
+  tabKaiko.classList.remove("active");
+  sectionUriko.classList.remove("hidden");
+  sectionKaiko.classList.add("hidden");
+});
 
-  // タブ切り替え
-  tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      tabs.forEach(t => t.classList.remove("active"));
-      tabContents.forEach(c => c.classList.remove("active"));
-      tab.classList.add("active");
-      document.getElementById(tab.dataset.tab).classList.add("active");
+// ------------------------------
+// 買い物リスト描画
+// ------------------------------
+function renderList() {
+  // ソート：悲しい/笑顔の順で悲しいを下に移動
+  items.sort((a, b) => {
+    if (a.status === "😢" && b.status === "🙂") return 1;
+    if (a.status === "🙂" && b.status === "😢") return -1;
+    return 0;
+  });
+
+  listBody.innerHTML = "";
+
+  items.forEach((item) => {
+    const tr = document.createElement("tr");
+
+    // 取置★マークがある場合は背景黄色
+    if (item.isReserved) {
+      tr.style.backgroundColor = "#fff59d";
+    }
+    // 悲しい状態なら背景グレーアウト
+    if (item.status === "😢") {
+      tr.style.backgroundColor = "#ccc";
+    }
+
+    // 取置★マークのセル
+    const reservedTd = document.createElement("td");
+    reservedTd.textContent = item.isReserved ? "★" : "";
+    reservedTd.style.textAlign = "center";
+
+    // サークル名/スぺ番のセル
+    const circleSpaceTd = document.createElement("td");
+    circleSpaceTd.textContent = `${item.circle} / ${item.space}`;
+
+    // 時間セル
+    const timeTd = document.createElement("td");
+    timeTd.textContent = item.time || "";
+
+    // 状態セル（プルダウン）
+    const statusTd = document.createElement("td");
+    const select = document.createElement("select");
+    const smileOption = document.createElement("option");
+    smileOption.value = "🙂";
+    smileOption.text = "🙂";
+    const sadOption = document.createElement("option");
+    sadOption.value = "😢";
+    sadOption.text = "😢";
+
+    select.appendChild(smileOption);
+    select.appendChild(sadOption);
+    select.value = item.status;
+
+    select.addEventListener("change", (e) => {
+      item.status = e.target.value;
+      saveToStorage();
+      renderList();
     });
-  });
+    statusTd.appendChild(select);
 
-  // ★チェックで時間入力有効/無効
-  reserveCheck.addEventListener("change", () => {
-    timeInput.disabled = !reserveCheck.checked;
-  });
+    tr.appendChild(reservedTd);
+    tr.appendChild(circleSpaceTd);
+    tr.appendChild(timeTd);
+    tr.appendChild(statusTd);
 
-  // 新規登録表示
-  addNewBtn.addEventListener("click", () => {
-    formOverlay.classList.remove("hidden");
-  });
+    // 「状態」プルダウン押下時はポップアップ表示しない
+    tr.addEventListener("click", (e) => {
+      if (e.target.tagName.toLowerCase() === "select") return;
+      showPopup(item);
+    });
 
-  // 登録キャンセル
-  cancelFormBtn.addEventListener("click", () => {
-    formOverlay.classList.add("hidden");
-    resetForm();
+    listBody.appendChild(tr);
   });
+}
 
-  // 登録処理
-  okFormBtn.addEventListener("click", () => {
-  const circle = document.getElementById("circleName").value.trim();
-  const space = document.getElementById("spaceNumber").value.trim();
-  const memo = document.getElementById("memo").value;
+// ------------------------------
+// ポップアップ表示処理
+// ------------------------------
+function showPopup(item) {
+  popupCircle.textContent = item.circle;
+  popupSpace.textContent = item.space;
+  popupMemo.textContent = item.memo;
+  popupStar.textContent = item.isReserved ? "★" : "";
+  popupTime.textContent = item.isReserved && item.time ? `時間: ${item.time}` : "";
+
+  popupOverlay.classList.remove("hidden");
+}
+
+popupCloseBtn.addEventListener("click", () => {
+  popupOverlay.classList.add("hidden");
+});
+
+// ------------------------------
+// 新規登録画面表示 & 登録処理
+// ------------------------------
+addNewBtn.addEventListener("click", () => {
+  // 新規登録時はデータ全部クリア
+  items = [];
+  saveToStorage();
+  renderList();
+
+  resetForm();
+  formOverlay.classList.remove("hidden");
+});
+
+formCancelBtn.addEventListener("click", () => {
+  formOverlay.classList.add("hidden");
+  resetForm();
+});
+
+okFormBtn.addEventListener("click", () => {
+  const circle = circleInput.value.trim();
+  const space = spaceInput.value.trim();
+  const memo = memoInput.value.trim();
   const isReserved = reserveCheck.checked;
   const time = timeInput.value;
-  const id = Date.now();
 
-  // 🛑 バリデーション追加
   if (!circle || !space) {
     alert("サークル名とスぺ番を入力してください。");
     return;
   }
 
-  const item = {
-    id,
+  const newItem = {
+    id: Date.now(),
     circle,
     space,
     memo,
@@ -70,168 +185,105 @@ document.addEventListener("DOMContentLoaded", () => {
     time,
     status: "🙂",
     notified5min: false,
-    notified10after: false
+    notified10after: false,
   };
 
-  items.push(item);
+  items.push(newItem);
   saveToStorage();
   renderList();
+
   formOverlay.classList.add("hidden");
   resetForm();
 });
 
-
-  // ポップアップ閉じる
-  closePopupBtn.addEventListener("click", () => {
-    popupOverlay.classList.add("hidden");
-  });
+reserveCheck.addEventListener("change", () => {
+  timeInput.disabled = !reserveCheck.checked;
 });
 
-// 初期化関数
 function resetForm() {
-  document.getElementById("circleName").value = "";
-  document.getElementById("spaceNumber").value = "";
-  document.getElementById("memo").value = "";
-  document.getElementById("reserveCheck").checked = false;
-  document.getElementById("timeInput").value = "";
-  document.getElementById("timeInput").disabled = true;
+  circleInput.value = "";
+  spaceInput.value = "";
+  memoInput.value = "";
+  reserveCheck.checked = false;
+  timeInput.value = "";
+  timeInput.disabled = true;
 }
 
-// 表示更新
-function renderList() {
-  const tbody = document.getElementById("buyListBody");
-  tbody.innerHTML = "";
-
-  items.sort((a, b) => {
-    if (a.status === "😢" && b.status !== "😢") return 1;
-    if (a.status !== "😢" && b.status === "😢") return -1;
-    return 0;
-  });
-
-  items.forEach(item => {
-    const tr = document.createElement("tr");
-
-    if (item.isReserved) tr.classList.add("highlight");
-    if (item.status === "😢") tr.classList.add("gray-out");
-
-    tr.innerHTML = `
-      <td>${item.isReserved ? "★" : ""}</td>
-      <td>${item.circle} / ${item.space}</td>
-      <td>${item.time || "-"}</td>
-      <td>
-        <select data-id="${item.id}">
-          <option value="🙂" ${item.status === "🙂" ? "selected" : ""}>🙂</option>
-          <option value="😢" ${item.status === "😢" ? "selected" : ""}>😢</option>
-        </select>
-      </td>
-    `;
-
-    // 詳細表示
-    tr.addEventListener("click", () => {
-      // 状態 select を押した場合はポップアップを表示しない
-      if (e.target.tagName.toLowerCase() === "select") return;
-      showPopup(item);
-    });
-
-    // 状態変更
-    tr.querySelector("select").addEventListener("change", e => {
-      const id = parseInt(e.target.dataset.id);
-      const selectedItem = items.find(i => i.id === id);
-      if (selectedItem) {
-        selectedItem.status = e.target.value;
-        saveToStorage();
-        renderList();
-      }
-    });
-
-    tbody.appendChild(tr);
-  });
-}
-
-// 詳細ポップアップ
-function showPopup(item) {
-  let html = `
-    <p><strong>サークル名:</strong> ${item.circle}</p>
-    <p><strong>スぺ番:</strong> ${item.space}</p>
-    <p><strong>メモ:</strong> ${item.memo}</p>
-  `;
-
-  if (item.isReserved) {
-    html += `<p><strong>取置:</strong> ★</p>`;
-    html += `<p><strong>時間:</strong> ${item.time || "-"}</p>`;
-  }
-
-  document.getElementById("popupContent").innerHTML = html;
-  document.getElementById("popupOverlay").classList.remove("hidden");
-}
-
-// localStorage
+// ------------------------------
+// ローカルストレージ読み書き
+// ------------------------------
 function saveToStorage() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+  localStorage.setItem("kaikoItems", JSON.stringify(items));
 }
 
 function loadFromStorage() {
-  const data = localStorage.getItem(STORAGE_KEY);
-  if (data) {
-    items = JSON.parse(data);
+  const saved = localStorage.getItem("kaikoItems");
+  if (saved) {
+    items = JSON.parse(saved);
   }
 }
 
-// 通知
-function requestNotificationPermission() {
-  if ("Notification" in window && Notification.permission !== "granted") {
-    Notification.requestPermission().then(permission => {
-      if (permission !== "granted") {
-        alert("通知が許可されていません");
-      }
-    });
-  }
+// ------------------------------
+// 通知処理（5分前・10分後）
+// ------------------------------
+function checkNotifications() {
+  const now = new Date();
+  items.forEach((item) => {
+    if (!item.time || !item.isReserved) return;
+
+    // 時間をDateオブジェクトに変換（今日の日付＋item.time）
+    const [hour, minute] = item.time.split(":").map(Number);
+    const notifTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute);
+
+    const diffMs = notifTime - now;
+    const diffMin = diffMs / 60000;
+
+    // 5分前通知
+    if (diffMin <= 5 && diffMin > 4 && !item.notified5min) {
+      showNotification(`【買い子】${item.circle}の取置時間が5分前です。`);
+      item.notified5min = true;
+      saveToStorage();
+    }
+    // 10分後通知
+    if (diffMin <= -10 && diffMin > -11 && !item.notified10after) {
+      showNotification(`【買い子】${item.circle}の取置時間から10分経過しました。`);
+      item.notified10after = true;
+      saveToStorage();
+    }
+  });
 }
 
-function showNotification(title, body) {
+// ------------------------------
+// 通知表示
+// ------------------------------
+function showNotification(message) {
   if (Notification.permission === "granted") {
-    navigator.serviceWorker.getRegistration().then(reg => {
-      if (reg) {
-        reg.showNotification(title, { body });
-      }
-    });
+    new Notification(message);
   }
 }
 
-// 通知の監視
-function setNotificationChecker() {
-  setInterval(() => {
-    const now = new Date();
-
-    items.forEach(item => {
-      if (!item.time || item.notified10after) return;
-
-      const [hour, minute] = item.time.split(":");
-      const scheduledTime = new Date();
-      scheduledTime.setHours(hour, minute, 0, 0);
-
-      const diffMinutes = (scheduledTime - now) / 1000 / 60;
-
-      if (diffMinutes <= 5 && !item.notified5min) {
-        showNotification(`まもなく ${item.circle}`, `あと5分で時間です (${item.time})`);
-        item.notified5min = true;
-      }
-
-      if (diffMinutes <= -10 && !item.notified10after) {
-        showNotification(`時間経過: ${item.circle}`, `${item.time} から10分経過しました`);
-        item.notified10after = true;
-      }
-    });
-
-    saveToStorage(); // 通知済みフラグ保存
-  }, 60 * 1000);
-}
-
-// PWA対応
+// ------------------------------
+// Service Worker登録
+// ------------------------------
 function registerServiceWorker() {
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js")
+    navigator.serviceWorker
+      .register("service-worker.js")
       .then(() => console.log("Service Worker registered"))
-      .catch(e => console.error("Service Worker error:", e));
+      .catch((e) => console.error("Service Worker registration failed", e));
+  }
+}
+
+// ------------------------------
+// 通知権限要求
+// ------------------------------
+function requestNotificationPermission() {
+  if ("Notification" in window) {
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        console.log("通知許可されました");
+        setInterval(checkNotifications, 60000); // 1分ごとにチェック
+      }
+    });
   }
 }
