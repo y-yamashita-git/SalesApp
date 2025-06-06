@@ -48,31 +48,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 登録処理
   okFormBtn.addEventListener("click", () => {
-    const circle = document.getElementById("circleName").value;
-    const space = document.getElementById("spaceNumber").value;
-    const memo = document.getElementById("memo").value;
-    const isReserved = reserveCheck.checked;
-    const time = timeInput.value;
-    const id = Date.now();
+  const circle = document.getElementById("circleName").value.trim();
+  const space = document.getElementById("spaceNumber").value.trim();
+  const memo = document.getElementById("memo").value;
+  const isReserved = reserveCheck.checked;
+  const time = timeInput.value;
+  const id = Date.now();
 
-    const item = {
-      id,
-      circle,
-      space,
-      memo,
-      isReserved,
-      time,
-      status: "🙂",
-      notified5min: false,
-      notified10after: false
-    };
+  // 🛑 バリデーション追加
+  if (!circle || !space) {
+    alert("サークル名とスぺ番を入力してください。");
+    return;
+  }
 
-    items.push(item);
-    saveToStorage();
-    renderList();
-    formOverlay.classList.add("hidden");
-    resetForm();
-  });
+  const item = {
+    id,
+    circle,
+    space,
+    memo,
+    isReserved,
+    time,
+    status: "🙂",
+    notified5min: false,
+    notified10after: false
+  };
+
+  items.push(item);
+  saveToStorage();
+  renderList();
+  formOverlay.classList.add("hidden");
+  resetForm();
+});
+
 
   // ポップアップ閉じる
   closePopupBtn.addEventListener("click", () => {
@@ -121,6 +128,8 @@ function renderList() {
 
     // 詳細表示
     tr.addEventListener("click", () => {
+      // 状態 select を押した場合はポップアップを表示しない
+      if (e.target.tagName.toLowerCase() === "select") return;
       showPopup(item);
     });
 
