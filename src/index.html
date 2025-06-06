@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>買い子アプリ</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="kaiko">買い子</button>
+    <button class="tab" data-tab="uriko">売り子</button>
+  </div>
+
+  <div id="kaiko" class="tab-content active">
+    <table>
+      <thead>
+        <tr>
+          <th>取置</th>
+          <th>サークル名/スぺ番</th>
+          <th>時間</th>
+          <th>状態</th>
+        </tr>
+      </thead>
+      <tbody id="buyListBody"></tbody>
+    </table>
+    <button id="addNew" class="btn">新規登録</button>
+  </div>
+
+  <div id="uriko" class="tab-content">
+    <p>売り子画面は未実装です。</p>
+  </div>
+
+  <!-- 登録画面 -->
+  <div id="formOverlay" class="overlay hidden">
+    <div class="form-container">
+      <h3>買い物リスト登録</h3>
+      <input type="text" id="circleName" placeholder="サークル名" />
+      <input type="text" id="spaceNumber" placeholder="スぺ番" />
+      <input type="text" id="memo" placeholder="メモ" />
+      <label><input type="checkbox" id="reserveCheck" /> ★ 取置</label>
+      <input type="time" id="timeInput" disabled />
+      <div class="form-buttons">
+        <button class="btn" id="cancelForm">取消</button>
+        <button class="btn" id="okForm">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ポップアップ -->
+  <div id="popupOverlay" class="overlay hidden">
+    <div class="popup">
+      <div id="popupContent"></div>
+      <button class="btn" id="closePopup">×</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
