@@ -9,13 +9,14 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
 </head>
 <body>
-
+  <!-- タブ -->
   <div class="tabs">
-    <button class="tab active" data-tab="kaiko">買い子</button>
-    <button class="tab" data-tab="uriko">売り子</button>
+    <button id="tabKaiko" class="tab active">買い子</button>
+    <button id="tabUriko" class="tab">売り子</button>
   </div>
 
-  <div id="kaiko" class="tab-content active">
+  <!-- 買い子タブ -->
+  <div id="sectionKaiko" class="tab-content">
     <table>
       <thead>
         <tr>
@@ -25,12 +26,13 @@
           <th>状態</th>
         </tr>
       </thead>
-      <tbody id="buyListBody"></tbody>
+      <tbody id="listBody"></tbody>
     </table>
-    <button id="addNew" class="btn">新規登録</button>
+    <button id="addNewBtn" class="btn">新規登録</button>
   </div>
 
-  <div id="uriko" class="tab-content">
+  <!-- 売り子タブ -->
+  <div id="sectionUriko" class="tab-content hidden">
     <p>売り子画面は未実装です。</p>
   </div>
 
@@ -44,8 +46,8 @@
       <label><input type="checkbox" id="reserveCheck" /> ★ 取置</label>
       <input type="time" id="timeInput" disabled />
       <div class="form-buttons">
-        <button class="btn" id="cancelForm">取消</button>
-        <button class="btn" id="okForm">OK</button>
+        <button class="btn" id="formCancelBtn">取消</button>
+        <button class="btn" id="okFormBtn">OK</button>
       </div>
     </div>
   </div>
@@ -53,11 +55,18 @@
   <!-- ポップアップ -->
   <div id="popupOverlay" class="overlay hidden">
     <div class="popup">
-      <div id="popupContent"></div>
-      <button class="btn" id="closePopup">×</button>
+      <div id="popupContent">
+        <p id="popupCircle"></p>
+        <p id="popupSpace"></p>
+        <p id="popupMemo"></p>
+        <p id="popupStar"></p>
+        <p id="popupTime"></p>
+      </div>
+      <button class="btn" id="popupCloseBtn">×</button>
     </div>
   </div>
 
+  <!-- スクリプト -->
   <script src="./js/script.js?v=1.0"></script>
 </body>
 </html>
