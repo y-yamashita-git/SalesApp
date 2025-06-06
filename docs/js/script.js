@@ -33,6 +33,12 @@ let items = []; // 買い物リスト全件
 // 初期化処理
 // ------------------------------
 window.addEventListener("load", () => {
+  // 初回タブであればデータをクリア
+  if (!sessionStorage.getItem("tabInitialized")) {
+    localStorage.removeItem("kaikoItems"); // ←ここで保存データ削除
+    sessionStorage.setItem("tabInitialized", "true");
+  }
+
   loadFromStorage();
   renderList();
   registerServiceWorker();
@@ -59,12 +65,14 @@ tabUriko.addEventListener("click", () => {
 // 買い物リスト描画
 // ------------------------------
 function renderList() {
-  // ソート：悲しい/笑顔の順で悲しいを下に移動
-  items.sort((a, b) => {
-    if (a.status === "😢" && b.status === "🙂") return 1;
-    if (a.status === "🙂" && b.status === "😢") return -1;
-    return 0;
-  });
+  // ソート順を定義（空→悲しい→笑顔）
+  const order = {
+    "": 0,
+    "sad": 1,
+    "smile": 2,
+  };
+
+  items.sort((a, b) => order[a.status] - order[b.status]);
 
   listBody.innerHTML = "";
 
@@ -75,8 +83,8 @@ function renderList() {
     if (item.isReserved) {
       tr.style.backgroundColor = "#fff59d";
     }
-    // 悲しい状態なら背景グレーアウト
-    if (item.status === "😢") {
+    // 悲しいか笑顔なら背景グレーアウト
+    if ((item.status === "sad" || item.status === "smile") ) {
       tr.style.backgroundColor = "#ccc";
     }
 
@@ -96,13 +104,17 @@ function renderList() {
     // 状態セル（プルダウン）
     const statusTd = document.createElement("td");
     const select = document.createElement("select");
+    const noneOption = document.createElement("option");
+    noneOption.value = "";
+    noneOption.text = "";
     const smileOption = document.createElement("option");
-    smileOption.value = "🙂";
+    smileOption.value = "smile";
     smileOption.text = "🙂";
     const sadOption = document.createElement("option");
-    sadOption.value = "😢";
+    sadOption.value = "sad";
     sadOption.text = "😢";
 
+    select.appendChild(noneOption);
     select.appendChild(smileOption);
     select.appendChild(sadOption);
     select.value = item.status;
@@ -133,9 +145,9 @@ function renderList() {
 // ポップアップ表示処理
 // ------------------------------
 function showPopup(item) {
-  popupCircle.textContent = item.circle;
-  popupSpace.textContent = item.space;
-  popupMemo.textContent = item.memo;
+  popupCircle.textContent = `サークル名 ：${item.circle}`;
+  popupSpace.textContent = `スペース番号：${item.space}`;
+  popupMemo.textContent = `メモ：${item.memo}`;
   popupStar.textContent = item.isReserved ? "★" : "";
   popupTime.textContent = item.isReserved && item.time ? `時間: ${item.time}` : "";
 
@@ -178,7 +190,7 @@ okFormBtn.addEventListener("click", () => {
     memo,
     isReserved,
     time,
-    status: "🙂",
+    status: "", // 状態は初期は空
     notified5min: false,
     notified10after: false,
   };
