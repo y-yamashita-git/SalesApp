@@ -801,7 +801,7 @@ function showCheckoutConfirm() {
   // 1. 選択アイテム取得
   const counts = window.checkoutCounts || {};
   const selected = products
-    .map((p, idx) => ({ ...p, count: counts[idx] || 0 }))
+    .map((p, idx) => ({ ...p, count: counts[idx] || 0, idx }))
     .filter(p => p.count > 0);
 
   // 2. 合計金額計算
@@ -851,20 +851,95 @@ function showCheckoutConfirm() {
   // ぴったりボタン
   document.getElementById("btnJust").onclick = () => {
     document.getElementById("payInput").value = total;
+    showChangePopup(total, total, selected);
   };
 
   // 戻るボタン
   document.getElementById("btnCheckoutBack").onclick = () => {
     overlay.classList.add("hidden");
-    // 会計画面に戻る（選択情報はwindow.checkoutCountsに残るのでそのまま）
-    checkoutPanel.style.display = "flex";
   };
 
   // 会計ボタン
   document.getElementById("btnCheckoutOk").onclick = () => {
-    alert("会計処理を実装してください");
-    // 必要に応じてここで選択数クリアや画面遷移
+    const payInput = document.getElementById("payInput");
+    const pay = Number(payInput.value);
+    if (!pay || pay < total) {
+      alert("金額が未入力、または合計金額より少ないです");
+      return;
+    }
+    showChangePopup(pay, total, selected);
   };
+
+  // お釣り・年齢確認ポップアップ
+  function showChangePopup(pay, total, selectedItems) {
+    // 年齢確認が必要な商品が含まれているか
+    const hasR18 = selectedItems.some(p => p.age === "r18");
+    // お釣り計算
+    const change = pay - total;
+
+    // 18歳以上の生年月日（今日基準）
+    let ageCheckHtml = "";
+    if (hasR18) {
+      const now = new Date();
+      const y = now.getFullYear() - 18;
+      const m = now.getMonth() + 1;
+      const d = now.getDate();
+      // 和暦計算
+      let wareki = "";
+      if (y >= 2019) {
+        wareki = `令和${y - 2018}年${m}月${d}日以前`;
+      } else if (y >= 1989) {
+        wareki = `平成${y - 1988}年${m}月${d}日以前`;
+      } else {
+        wareki = `昭和${y - 1925}年${m}月${d}日以前`;
+      }
+      ageCheckHtml = `
+        <div style="color:#d32f2f; font-weight:bold; margin-top:12px;">※年齢確認を忘れずに！</div>
+        <div style="margin-top:4px;">${y}年${m}月${d}日（${wareki}）生まれ以前が18歳以上です</div>
+      `;
+    }
+
+    // 売上記録
+    let sales = JSON.parse(localStorage.getItem("sales") || "[]");
+    let saleTotal = 0;
+    selectedItems.forEach(item => {
+      saleTotal += (Number(item.price) || 0) * item.count;
+      // 売上個数・金額を記録
+      sales.push({
+        title: item.title,
+        price: item.price,
+        count: item.count,
+        date: new Date().toISOString()
+      });
+      // 在庫を減らす
+      if (typeof item.idx === "number" && products[item.idx]) {
+        products[item.idx].stock = String((Number(products[item.idx].stock) || 0) - item.count);
+      }
+    });
+    localStorage.setItem("sales", JSON.stringify(sales));
+    localStorage.setItem("urikoProducts", JSON.stringify(products));
+
+    // 押下数クリア
+    window.checkoutCounts = {};
+
+    // ポップアップ内容
+    overlay.innerHTML = `
+      <div class="checkout-confirm-panel" style="text-align:center;">
+        <div style="font-size:1.3em; margin-bottom:10px;">
+          お釣りは${change}円です
+        </div>
+        ${ageCheckHtml}
+        <div style="margin-top:18px;">
+          <button id="btnKaikeiNew" class="btn">新規</button>
+        </div>
+      </div>
+    `;
+    // 新規ボタン
+    document.getElementById("btnKaikeiNew").onclick = () => {
+      overlay.classList.add("hidden");
+      renderCheckoutProducts();
+    };
+  }
 }
 
 // 電卓パッド描画
