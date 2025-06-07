@@ -33,10 +33,67 @@
 
   <!-- 売り子タブ -->
   <div id="sectionUriko" class="tab-content hidden">
-    <p>売り子画面は未実装です。</p>
+    <!-- 売り子用ボタンリスト -->
+    <div id="urikoButtons" style="padding: 16px;">
+      <button id="btnKaikei" style="width:100%;margin-bottom:8px;">会計</button>
+      <button id="btnProduct" style="width:100%;margin-bottom:8px;">商品登録</button>
+      <button style="width:100%;margin-bottom:8px;">取置きリスト</button>
+      <button style="width:100%;">売上情報</button>
+    </div>
+    <!-- 商品一覧画面 -->
+    <div id="productListView" class="hidden">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-weight:bold;">商品一覧</span>
+        <button id="btnAddProduct" style="font-size:1.5em;">＋</button>
+      </div>
+      <div id="productList" style="display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;"></div>
+      <div style="display:flex;justify-content:center;margin-top:16px;">
+        <button id="btnProductBack" class="btn" style="width:80px;">🔙</button>
+      </div>
+    </div>
+    <!-- 商品登録フォーム（従来のフォームはhiddenのまま） -->
+    <div id="productFormView" class="hidden">
+      <div style="padding:12px;">
+        <div>
+          <label>タイトル<br>
+            <input type="text" id="productTitle" style="width:100%;">
+          </label>
+        </div>
+        <div style="margin-top:8px;">
+          <label>しゅるい
+            <select id="productType">
+              <option value="book">本</option>
+              <option value="goods">グッズ</option>
+            </select>
+          </label>
+          <label style="margin-left:8px;">
+            <input type="checkbox" id="productR18"> R18
+          </label>
+        </div>
+        <div style="margin-top:8px;">
+          <label>画像<br>
+            <input type="file" id="productImage" accept="image/*">
+          </label>
+        </div>
+        <div style="margin-top:8px;">
+          <label>金額<br>
+            <input type="number" id="productPrice" style="width:100px;"> 円
+          </label>
+        </div>
+        <div style="margin-top:8px;">
+          <label>メモ<br>
+            <textarea id="productMemo" style="width:100%;"></textarea>
+          </label>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:8px;">
+          <button id="btnProductCancel" class="btn">キャンセル</button>
+          <button id="btnProductRegister" class="btn">登録</button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- 登録画面 -->
+  <!-- 買い物リスト登録画面 -->
   <div id="formOverlay" class="overlay hidden">
     <div class="form-container">
       <h3>買い物リスト登録</h3>
@@ -52,7 +109,7 @@
     </div>
   </div>
 
-  <!-- ポップアップ -->
+  <!-- 買い物リスト詳細ポップアップ -->
   <div id="popupOverlay" class="overlay hidden">
     <div class="popup">
       <div id="popupContent">
@@ -66,7 +123,10 @@
     </div>
   </div>
 
+  <!-- 商品登録ポップアップ（動的生成される） -->
+  <!-- <div id="productPopupOverlay" class="overlay hidden">...</div> -->
+
   <!-- スクリプト -->
-  <script src="./js/script.js?v=1.0"></script>
+  <script src="./js/script.js"></script>
 </body>
 </html>

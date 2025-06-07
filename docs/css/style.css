@@ -1,43 +1,29 @@
-/* ベーススタイル */
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f5f5f5;
-  color: #333;
-}
-
 /* タブ */
 .tabs {
   display: flex;
-  border-bottom: 1px solid #ccc;
+  gap: 0;
+  margin-bottom: 8px;
 }
-
 .tab {
   flex: 1;
-  padding: 12px;
-  text-align: center;
-  background: #eee;
+  padding: 12px 0;
+  background: #f5f5f5;
   border: none;
-  cursor: pointer;
-  font-size: 16px;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.tab.active {
-  background: #ddd;
+  border-radius: 12px 12px 0 0;
+  font-size: 1.1em;
   font-weight: bold;
-  border-bottom: 2px solid #333;
+  color: #1976d2;
+  transition: background 0.2s;
+}
+.tab.active {
+  background: #bbdefb;
+  color: #0d47a1;
 }
 
 /* タブコンテンツ */
 .tab-content {
-  display: none;
-  padding: 1em;
-  background: white;
+  padding: 0 8px 16px 8px;
 }
-
 .tab-content.active,
 .tab-content:not(.hidden) {
   display: block;
@@ -47,19 +33,25 @@ body {
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
-  background: white;
+  margin-bottom: 12px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px #0001;
 }
-
 th, td {
-  padding: 10px;
-  border: 1px solid #ccc;
+  padding: 8px 4px;
+  border-bottom: 1px solid #eee;
   text-align: center;
+  font-size: 15px;
+}
+th {
+  background: #e3f2fd;
+  font-weight: bold;
 }
 
 /* ボタン */
 .btn {
-  padding: 10px 16px;
   margin: 8px 0;
   cursor: pointer;
   font-size: 14px;
@@ -67,20 +59,152 @@ th, td {
   color: white;
   border: none;
   border-radius: 4px;
+  padding: 10px 0;
+  transition: background 0.2s;
 }
-
-.btn:hover {
+.btn:hover,
+.btn:active {
   background: #1976d2;
 }
 
-/* グレーアウト用 */
-.gray-out {
-  background-color: #e0e0e0 !important;
+/* 売り子ボタンリスト */
+#urikoButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: #e3f2fd;
+  border-radius: 12px;
+  margin: 16px 0;
+}
+#urikoButtons button {
+  width: 100%;
+  padding: 14px 0;
+  font-size: 1.1em;
+  border: none;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 6px #0001;
+  margin-bottom: 0;
+  transition: background 0.2s;
+}
+#urikoButtons button:active {
+  background: #bbdefb;
 }
 
-/* 取置（★）用の黄色背景 */
-.highlight {
-  background-color: #fff9c4 !important;
+/* 商品一覧カード */
+#productList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+}
+.product-card {
+  position: relative;
+  width: 120px;
+  background: #f5f5f5;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0001;
+  padding-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.product-card img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px 12px 0 0;
+  background: #eee;
+}
+.product-card .price-tag {
+  position: absolute;
+  right: 8px;
+  bottom: 40px;
+  background: rgba(255,255,255,0.85);
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: bold;
+  color: #1976d2;
+  box-shadow: 0 1px 4px #0002;
+}
+.product-card .title-row {
+  margin-top: 6px;
+  font-weight: bold;
+  font-size: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.product-card .r18 {
+  font-size: 1.1em;
+  margin-right: 2px;
+  color: #d32f2f;
+}
+
+/* 商品一覧画面ヘッダー */
+#productListView > div:first-child {
+  margin-bottom: 8px;
+}
+#btnAddProduct {
+  background: #fff;
+  border: 2px solid #1976d2;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  color: #1976d2;
+  font-size: 1.5em;
+  font-weight: bold;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px #0001;
+  transition: background 0.2s;
+}
+#btnAddProduct:active {
+  background: #bbdefb;
+}
+
+/* 商品登録フォーム */
+#productFormView {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0001;
+  margin: 16px;
+  padding: 16px;
+}
+#productFormView input[type="text"],
+#productFormView input[type="number"],
+#productFormView textarea {
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  padding: 6px;
+  margin-top: 4px;
+  font-size: 1em;
+}
+#productFormView textarea {
+  min-height: 48px;
+  resize: vertical;
+}
+#productFormView label {
+  font-size: 0.97em;
+}
+#productFormView .btn {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 8px;
+  border: none;
+  background: #1976d2;
+  color: #fff;
+  font-size: 1em;
+  margin: 0 2px;
+  transition: background 0.2s;
+}
+#productFormView .btn:active {
+  background: #1565c0;
 }
 
 /* オーバーレイ（ポップアップ・フォーム） */
@@ -96,7 +220,6 @@ th, td {
   align-items: center;
   z-index: 999;
 }
-
 .overlay.hidden {
   display: none;
 }
@@ -144,26 +267,246 @@ label {
   font-size: 16px;
 }
 
-.status-slider {
+/* 隠す用 */
+.hidden {
+  display: none !important;
+}
+
+/* 商品一覧カード */
+.product-card {
+  width: 120px;
+  background: #f5f5f5;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0001;
+  padding-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.product-card .img-wrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+.product-card img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px 12px 0 0;
+  background: #eee;
+  display: block;
+}
+.product-card .price-tag {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  background: rgba(255,255,255,0.92);
+  padding: 2px 10px;
+  border-radius: 16px;
+  font-size: 1em;
+  font-weight: bold;
+  color: #1976d2;
+  box-shadow: 0 1px 4px #0002;
+  pointer-events: none;
+}
+.product-card .info-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 1em;
+  width: 100%;
+  padding-left: 8px;
+  padding-right: 8px;
+  box-sizing: border-box;
+}
+.product-card .r18 {
+  font-size: 1.1em;
+  color: #d32f2f;
+  margin-right: 2px;
+}
+.product-card .product-title {
+  font-weight: bold;
+  flex: 1;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 商品登録ポップアップ全体 */
+#productPopupOverlay .form-container {
+  max-width: 370px;
+  width: 95vw;
+  padding: 18px 10px 16px 10px;
+  border-radius: 16px;
+  background: #fff;
+}
+
+/* 1行目: タイトル */
+#popupProductTitle {
+  width: 100%;
+  font-size: 1.1em;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #bbb;
+  margin-bottom: 0;
+}
+
+/* 2行目: 画像＋ラジオボタン群2列レイアウト */
+.popup-row2 {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 0;
+}
+.popup-img-col {
+  flex: 0 0 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.popup-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #ddd;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  display: block;
+  cursor: pointer;
+}
+.img-label {
+  cursor: pointer;
+}
+.popup-radio-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+}
+.radio-group {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 0;
+}
+/* ラジオボタン（ボタン風） */
+.radio-btn {
+  border-radius: 8px;
+  border: 2px solid #1976d2;
+  background: #f5f5f5;
+  color: #1976d2;
+  font-weight: bold;
+  padding: 6px 18px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  user-select: none;
+  margin: 0;
+  display: inline-block;
+}
+.radio-btn input[type="radio"] {
+  display: none;
+}
+.radio-btn input[type="radio"]:checked + span {
+  background: #1976d2;
+  color: #fff;
+  border-radius: 8px;
+  border: 2px solid #1976d2;
+  box-shadow: none;
+}
+.radio-btn input[type="radio"]:checked + span {
+  /* 追加で親の枠線も青に */
+  outline: none;
+}
+.radio-btn input[type="radio"]:checked ~ span {
+  background: #1976d2;
+  color: #fff;
+  border-radius: 8px;
+  border: 2px solid #1976d2;
+}
+.radio-btn span {
+  pointer-events: none;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+
+/* 選択時、親label自体の枠線も青に */
+.radio-btn input[type="radio"]:checked + span,
+.radio-btn input[type="radio"]:checked ~ span {
+  background: #1976d2;
+  color: #fff;
+  border-radius: 8px;
+  border: 2px solid #1976d2;
+}
+.radio-btn input[type="radio"]:checked + span {
+  box-shadow: 0 0 0 2px #1976d2;
+}
+.radio-btn:has(input[type="radio"]:checked) {
+  background: #1976d2;
+  color: #fff;
+  border-color: #1976d2;
+  box-shadow: none;
+}
+
+/* 3行目: メモ */
+#popupProductMemo {
+  width: 100%;
+  min-height: 60px;
+  border-radius: 8px;
+  border: 1px solid #bbb;
+  padding: 8px;
+  font-size: 1em;
+  resize: vertical;
+  margin-top: 0;
+  margin-bottom: 0;
+  box-sizing: border-box;
+}
+
+/* 4行目: ボタン横並び・等間隔 */
+.popup-btn-row {
   display: flex;
   justify-content: space-between;
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  overflow: hidden;
-  width: 100%;
+  gap: 10px;
+  margin-top: 18px;
 }
-
-.status-btn {
+#popupProductBack,
+#popupProductRegister,
+#popupProductDelete {
   flex: 1;
-  padding: 6px 0;
-  font-size: 14px;
-  background: #f0f0f0;
   border: none;
-  cursor: pointer;
+  border-radius: 8px;
+  padding: 10px 0;
+  font-size: 1em;
   transition: background 0.2s;
+  margin: 0;
+}
+#popupProductBack {
+  background: #bdbdbd;
+  color: #fff;
+}
+#popupProductRegister {
+  background: #1976d2;
+  color: #fff;
+}
+#popupProductDelete {
+  background: #d32f2f;
+  color: #fff;
+}
+#productPopupClose {
+  display: none !important;
 }
 
-.status-btn.active {
-  background: #4caf50;
-  color: white;
+#popupProductBack:active { background: #757575; }
+#popupProductRegister:active { background: #1565c0; }
+#popupProductDelete:active { background: #b71c1c; }
+
+/* ラベルを上に */
+#productPopupContent label {
+  display: block;
+  font-size: 1em;
+  margin-bottom: 2px;
 }
