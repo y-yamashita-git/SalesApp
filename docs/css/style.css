@@ -540,6 +540,7 @@ label {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  z-index: 1;
 }
 
 /* 1行目: タブ（固定） */

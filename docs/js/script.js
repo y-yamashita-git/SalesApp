@@ -77,9 +77,17 @@ window.addEventListener("load", () => {
 // タブ切替処理（買い子/売り子）
 // ------------------------------
 tabKaiko.addEventListener("click", (e) => {
+  // tryHideCheckoutPanelは残す（移動メッセージの概念）
   if (checkoutPanel.style.display !== "none") {
     const proceed = tryHideCheckoutPanel(e);
     if (!proceed) return;
+    // 会計画面を閉じる
+    checkoutPanel.style.display = "none";
+    window.checkoutCounts = {};
+    const grid = document.querySelector('.checkout-products-grid');
+    if (grid) grid.innerHTML = "";
+    const payInput = document.getElementById("payInput");
+    if (payInput) payInput.value = "";
   }
   tabKaiko.classList.add("active");
   tabUriko.classList.remove("active");
@@ -87,17 +95,39 @@ tabKaiko.addEventListener("click", (e) => {
   sectionUriko.classList.add("hidden");
   urikoButtons.classList.add("hidden");
 });
+
+// 売り子タブは会計画面が開いている間は押せなくする
 tabUriko.addEventListener("click", (e) => {
   if (checkoutPanel.style.display !== "none") {
-    const proceed = tryHideCheckoutPanel(e);
-    if (!proceed) return;
+    // 押せないようにreturn（tryHideCheckoutPanelも呼ばない）
+    e.preventDefault();
+    e.stopPropagation();
+    return;
   }
   tabUriko.classList.add("active");
   tabKaiko.classList.remove("active");
   sectionUriko.classList.remove("hidden");
   sectionKaiko.classList.add("hidden");
+  productListView.classList.add("hidden");
+ productFormView.classList.add("hidden");
   urikoButtons.classList.remove("hidden");
 });
+
+// 会計画面から他タブへ移動時の確認メッセージ
+function tryHideCheckoutPanel(e) {
+  // ここで確認ダイアログを出す
+  const proceed = confirm("会計画面を閉じて移動しますか？\n（入力中の内容はクリアされます）");
+  if (!proceed) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    return false;
+  }
+  // ここで会計画面を閉じる処理もしておくと安全
+  checkoutPanel.style.display = "none";
+  return true;
+}
 
 // ------------------------------
 // 買い物リスト描画
@@ -666,13 +696,6 @@ function resetProductForm() {
   productMemo.value = "";
 }
 
-// 売り子タブ表示時に商品一覧・フォームを隠す
-tabUriko.addEventListener("click", () => {
-  productListView.classList.add("hidden");
-  productFormView.classList.add("hidden");
-  urikoButtons.classList.remove("hidden");
-});
-
 // 初期化時に商品リスト読込
 window.addEventListener("load", () => {
   const saved = localStorage.getItem("urikoProducts");
@@ -689,29 +712,12 @@ if (checkoutPanel) {
   checkoutPanel.style.display = "none";
 }
 
-// 会計ボタン押下で表示
-if (btnKaikei && checkoutPanel) {
-  btnKaikei.addEventListener('click', () => {
-    checkoutPanel.style.display = "flex";
-  });
-}
-
-// 戻るボタンで非表示
-if (checkoutBackBtn && checkoutPanel) {
-  checkoutBackBtn.addEventListener('click', () => {
-    checkoutPanel.style.display = "none";
-  });
-}
-
 // 会計ボタン押下で会計画面を表示し、他の売り子画面を非表示
 if (btnKaikei && checkoutPanel) {
   btnKaikei.addEventListener('click', () => {
-    // 会計画面表示
     checkoutPanel.style.display = "flex";
-    // 売り子ボタン・商品一覧・商品フォームを非表示
     urikoButtons.classList.add("hidden");
-    productListView.classList.add("hidden");
-    productFormView.classList.add("hidden");
+    renderCheckoutProducts();
   });
 }
 
@@ -779,17 +785,6 @@ function renderCheckoutProducts() {
     };
 
     grid.appendChild(card);
-  });
-}
-
-// 会計ボタン押下で表示
-if (btnKaikei && checkoutPanel) {
-  btnKaikei.addEventListener('click', () => {
-    checkoutPanel.style.display = "flex";
-    urikoButtons.classList.add("hidden");
-    productListView.classList.add("hidden");
-    productFormView.classList.add("hidden");
-    renderCheckoutProducts(); // ←ここで会計画面の商品一覧を描画
   });
 }
 
