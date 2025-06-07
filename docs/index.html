@@ -51,7 +51,40 @@
         <button id="btnProductBack" class="btn" style="width:80px;">↩</button>
       </div>
     </div>
-    <!-- 商品登録フォーム（従来のフォームはhiddenのまま） -->
+  </div>
+
+  <!-- 買い物リスト登録画面 -->
+  <div id="formOverlay" class="overlay hidden">
+    <div class="form-container">
+      <h3>買い物リスト登録</h3>
+      <input type="text" id="circleName" placeholder="サークル名" />
+      <input type="text" id="spaceNumber" placeholder="スぺ番" />
+      <input type="text" id="memo" placeholder="メモ" />
+      <label><input type="checkbox" id="reserveCheck" /> ★ 取置</label>
+      <input type="time" id="timeInput" disabled />
+      <div class="form-buttons">
+        <button class="btn" id="formCancelBtn">取消</button>
+        <button class="btn" id="okFormBtn">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 買い物リスト詳細ポップアップ -->
+  <div id="popupOverlay" class="overlay hidden">
+    <div class="popup">
+      <div id="popupContent">
+        <p id="popupCircle"></p>
+        <p id="popupSpace"></p>
+        <p id="popupMemo"></p>
+        <p id="popupStar"></p>
+        <p id="popupTime"></p>
+      </div>
+      <button class="btn" id="popupCloseBtn">×</button>
+    </div>
+  </div>
+
+
+  <!-- 商品登録フォーム（従来のフォームはhiddenのまま） -->
     <div id="productFormView" class="hidden">
       <div style="padding:12px;">
         <div>
@@ -91,37 +124,6 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- 買い物リスト登録画面 -->
-  <div id="formOverlay" class="overlay hidden">
-    <div class="form-container">
-      <h3>買い物リスト登録</h3>
-      <input type="text" id="circleName" placeholder="サークル名" />
-      <input type="text" id="spaceNumber" placeholder="スぺ番" />
-      <input type="text" id="memo" placeholder="メモ" />
-      <label><input type="checkbox" id="reserveCheck" /> ★ 取置</label>
-      <input type="time" id="timeInput" disabled />
-      <div class="form-buttons">
-        <button class="btn" id="formCancelBtn">取消</button>
-        <button class="btn" id="okFormBtn">OK</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 買い物リスト詳細ポップアップ -->
-  <div id="popupOverlay" class="overlay hidden">
-    <div class="popup">
-      <div id="popupContent">
-        <p id="popupCircle"></p>
-        <p id="popupSpace"></p>
-        <p id="popupMemo"></p>
-        <p id="popupStar"></p>
-        <p id="popupTime"></p>
-      </div>
-      <button class="btn" id="popupCloseBtn">×</button>
-    </div>
-  </div>
 
   <!-- 会計画面レイアウト -->
   <div class="checkout-panel" style="display:none; flex-direction:column; height:100%;">
@@ -153,7 +155,7 @@
     </div>
     <div class="checkout-confirm-calc" id="checkoutCalcPad"></div>
     <div class="checkout-confirm-btn-row">
-      <button id="btnCheckoutBack" class="btn">戻る</button>
+      <button id="btnCheckoutBack" class="btn"></button>
       <button id="btnCheckoutOk" class="btn">会計</button>
     </div>
   </div>
