@@ -123,6 +123,23 @@
     </div>
   </div>
 
+  <!-- 会計画面レイアウト -->
+  <div class="checkout-panel" style="display:none; flex-direction:column; height:100%;">
+    <div class="checkout-tabs">
+      <button class="tab active">会計</button>
+      <button class="tab">取り置き</button>
+    </div>
+    <div class="checkout-products-scroll" style="flex:1; overflow-y:auto;">
+      <div class="checkout-products-grid">
+        <!-- JSで商品カードがここに動的に挿入されます -->
+      </div>
+    </div>
+    <div class="checkout-bottom-bar">
+      <button class="back-btn">🔙</button>
+      <button class="checkout-btn">会計</button>
+    </div>
+  </div>
+
   <!-- 商品登録ポップアップ（動的生成される） -->
   <!-- <div id="productPopupOverlay" class="overlay hidden">...</div> -->
 

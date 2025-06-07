@@ -31,6 +31,7 @@ const urikoButtons = document.getElementById("urikoButtons");
 
 let products = []; // 商品リスト
 
+// 商品関連のDOM取得
 const btnProduct = document.getElementById("btnProduct");
 const productListView = document.getElementById("productListView");
 const productFormView = document.getElementById("productFormView");
@@ -47,6 +48,10 @@ const productPrice = document.getElementById("productPrice");
 const productMemo = document.getElementById("productMemo");
 const btnProductBack = document.getElementById("btnProductBack");
 
+// 会計画面の表示・非表示制御
+const checkoutPanel = document.querySelector('.checkout-panel');
+const btnKaikei = document.getElementById('btnKaikei');
+const checkoutBackBtn = document.querySelector('.checkout-bottom-bar .back-btn');
 
 let items = []; // 買い物リスト全件
 
@@ -402,7 +407,7 @@ function showProductPopup(product = null, idx = null) {
     <div style="margin-bottom:10px;">
       <input type="text" id="popupProductTitle" placeholder="タイトル" style="width:100%;font-size:1.1em;padding:8px 10px;border-radius:8px;border:1px solid #bbb;" value="${product ? escapeHtml(product.title) : ""}">
     </div>
-    <!-- 2行目: 画像＋ラジオボタン群 -->
+    <!-- 2行目: 画像＋ラジオボタン群＋金額・在庫 -->
     <div class="popup-row2">
       <div class="popup-img-col">
         <label for="popupProductImage" class="img-label">
@@ -410,7 +415,7 @@ function showProductPopup(product = null, idx = null) {
         </label>
         <input type="file" id="popupProductImage" accept="image/*" style="display:none;">
       </div>
-      <div class="popup-radio-col">
+      <div class="popup-radio-col" style="flex:2;">
         <div class="radio-group">
           <label class="radio-btn"><input type="radio" name="popupProductType" value="goods" ${!product || product.type === "goods" ? "checked" : ""}><span>グッズ</span></label>
           <label class="radio-btn"><input type="radio" name="popupProductType" value="book" ${product && product.type === "book" ? "checked" : ""}><span>本</span></label>
@@ -419,9 +424,25 @@ function showProductPopup(product = null, idx = null) {
           <label class="radio-btn"><input type="radio" name="popupProductShin" value="new" ${!product || product.shin === "new" ? "checked" : ""}><span>新刊</span></label>
           <label class="radio-btn"><input type="radio" name="popupProductShin" value="old" ${product && product.shin === "old" ? "checked" : ""}><span>既刊</span></label>
         </div>
-        <div class="radio-group">
+        <div class="radio-group" style="align-items: flex-end;">
           <label class="radio-btn"><input type="radio" name="popupProductAge" value="all" ${!product || product.age === "all" ? "checked" : ""}><span>全年齢</span></label>
           <label class="radio-btn"><input type="radio" name="popupProductAge" value="r18" ${product && product.age === "r18" ? "checked" : ""}><span>R18</span></label>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+          <div style="display: flex; align-items: center;">
+            <label style="font-size:1.1em; width: 55px; text-align: right;">金額：</label>
+            <input type="number" id="popupProductPrice" placeholder="金額" min="0"
+              style="width:110px; font-size:1.1em; padding:8px 10px; border-radius:8px; border:2px solid #1976d2; margin-left:8px; height:30px;"
+              value="${product && product.price ? product.price : ""}">
+          </div>
+          <div style="display: flex; align-items: center;">
+            <label style="font-size:1.1em; width: 55px; text-align: right;">在庫：</label>
+            <input type="number" id="popupProductStock" placeholder="在庫" min="0"
+              style="width:110px; font-size:1.1em; padding:8px 10px; border-radius:8px; border:2px solid #1976d2; margin-left:8px; height:30px;"
+              value="${product && product.stock ? product.stock : ""}">
+          </div>
+        </div>
+        </div>
         </div>
       </div>
     </div>
@@ -463,11 +484,13 @@ function showProductPopup(product = null, idx = null) {
     const type = document.querySelector('input[name="popupProductType"]:checked').value;
     const shin = document.querySelector('input[name="popupProductShin"]:checked').value;
     const age = document.querySelector('input[name="popupProductAge"]:checked').value;
+    const price = document.getElementById("popupProductPrice").value;
+    const stock = document.getElementById("popupProductStock").value;
     const memo = document.getElementById("popupProductMemo").value;
     let imageUrl = product && product.imageUrl ? product.imageUrl : "https://placehold.co/120x120?text=No+Image";
 
     function saveAndClose(url) {
-      const newProduct = { title, type, shin, age, memo, imageUrl: url };
+      const newProduct = { title, type, shin, age, price, stock, memo, imageUrl: url };
       if (product && idx !== null) {
         products[idx] = newProduct;
       } else {
@@ -531,11 +554,26 @@ function renderProductList() {
     });
     imgWrap.appendChild(img);
 
-    // 金額（画像内右下）
+    // 金額（画像内右下〇バッジ）
     if (p.price) {
       const priceTag = document.createElement("div");
       priceTag.className = "price-tag";
-      priceTag.textContent = `${p.price}円`;
+      priceTag.textContent = `￥${p.price}`;
+      priceTag.style.position = "absolute";
+      priceTag.style.right = "6px";
+      priceTag.style.bottom = "6px";
+      priceTag.style.background = "#fff";
+      priceTag.style.color = "#1976d2";
+      priceTag.style.border = "2px solid #1976d2";
+      priceTag.style.borderRadius = "50%";
+      priceTag.style.width = "38px";
+      priceTag.style.height = "38px";
+      priceTag.style.display = "flex";
+      priceTag.style.alignItems = "center";
+      priceTag.style.justifyContent = "center";
+      priceTag.style.fontWeight = "bold";
+      priceTag.style.fontSize = "1em";
+      priceTag.style.boxShadow = "0 1px 4px #0002";
       imgWrap.appendChild(priceTag);
     }
 
@@ -609,3 +647,117 @@ window.addEventListener("load", () => {
   const saved = localStorage.getItem("urikoProducts");
   if (saved) products = JSON.parse(saved);
 });
+
+// ------------------------------
+// 会計関連処理
+// ------------------------------
+// 会計パネルの表示・非表示制御
+
+// 初期状態で非表示
+if (checkoutPanel) {
+  checkoutPanel.style.display = "none";
+}
+
+// 会計ボタン押下で表示
+if (btnKaikei && checkoutPanel) {
+  btnKaikei.addEventListener('click', () => {
+    checkoutPanel.style.display = "flex";
+  });
+}
+
+// 戻るボタンで非表示
+if (checkoutBackBtn && checkoutPanel) {
+  checkoutBackBtn.addEventListener('click', () => {
+    checkoutPanel.style.display = "none";
+  });
+}
+
+// 会計ボタン押下で会計画面を表示し、他の売り子画面を非表示
+if (btnKaikei && checkoutPanel) {
+  btnKaikei.addEventListener('click', () => {
+    // 会計画面表示
+    checkoutPanel.style.display = "flex";
+    // 売り子ボタン・商品一覧・商品フォームを非表示
+    urikoButtons.classList.add("hidden");
+    productListView.classList.add("hidden");
+    productFormView.classList.add("hidden");
+  });
+}
+
+// 戻るボタンで会計画面を非表示、売り子タブのメインボタン群を表示
+if (checkoutBackBtn && checkoutPanel) {
+  checkoutBackBtn.addEventListener('click', () => {
+    checkoutPanel.style.display = "none";
+    urikoButtons.classList.remove("hidden");
+    // 必要なら他の売り子画面もここで制御
+  });
+}
+
+// 会計画面の商品一覧を描画
+function renderCheckoutProducts() {
+  const grid = document.querySelector('.checkout-products-grid');
+  if (!grid) return;
+  grid.innerHTML = ""; // 一度クリア
+
+  // 選択数を保持する（セッション中のみ）
+  if (!window.checkoutCounts) window.checkoutCounts = {};
+  const counts = window.checkoutCounts;
+
+  products.forEach((p, idx) => {
+    const card = document.createElement("div");
+    card.className = "checkout-product";
+
+    // 商品画像
+    const img = document.createElement("img");
+    img.src = p.imageUrl || "https://placehold.co/120x120?text=No+Image";
+    img.alt = p.title || "";
+    card.appendChild(img);
+
+    // 選択数バッジ
+    const count = counts[idx] || 0;
+    const badge = document.createElement("span");
+    badge.className = "count-badge";
+    badge.textContent = count > 0 ? count : "";
+    card.appendChild(badge);
+
+    // マイナスボタン
+    const minusBtn = document.createElement("button");
+    minusBtn.className = "minus-btn";
+    minusBtn.textContent = "−";
+    minusBtn.style.display = count > 0 ? "flex" : "none";
+    minusBtn.onclick = (e) => {
+      e.stopPropagation();
+      if (counts[idx] > 0) {
+        counts[idx]--;
+        renderCheckoutProducts();
+      }
+    };
+    card.appendChild(minusBtn);
+
+    // 画像押下でカウント増加
+    img.onclick = () => {
+      const stock = Number(p.stock) || 0;
+      if (counts[idx] === undefined) counts[idx] = 0;
+      if (counts[idx] < stock) {
+        counts[idx]++;
+        renderCheckoutProducts();
+      } else {
+        // 在庫以上は追加できない
+        alert("在庫数に達しています");
+      }
+    };
+
+    grid.appendChild(card);
+  });
+}
+
+// 会計ボタン押下で表示
+if (btnKaikei && checkoutPanel) {
+  btnKaikei.addEventListener('click', () => {
+    checkoutPanel.style.display = "flex";
+    urikoButtons.classList.add("hidden");
+    productListView.classList.add("hidden");
+    productFormView.classList.add("hidden");
+    renderCheckoutProducts(); // ←ここで会計画面の商品一覧を描画
+  });
+}
