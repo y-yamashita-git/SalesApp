@@ -748,3 +748,122 @@ label {
   padding: 0;
   line-height: 1;
 }
+
+
+/* 会計確認画面レイアウト */
+.checkout-confirm-panel {
+  background: #fff;
+  border-radius: 12px;
+  width: 33vw;           /* 画面の1/3の幅 */
+  min-width: 280px;      /* スマホ等で小さくなりすぎないように */
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 16px;
+  box-shadow: 0 2px 16px #0002;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.checkout-confirm-list-scroll {
+  max-height: calc(3 * 2.6em + 2 * 8px); /* 3行分の高さ＋2つのgap */
+  overflow-y: auto;
+  margin-bottom: 8px;
+}
+.checkout-confirm-list-grid {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 8px;
+}
+.checkout-confirm-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.1em;
+  background: #f5f5f5;
+  border-radius: 6px;
+  padding: 4px 8px;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 2.6em; 
+}
+.checkout-confirm-total {
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align: right;
+  margin-bottom: 8px;
+}
+.checkout-confirm-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.checkout-confirm-calc {
+  margin: 8px 0;
+}
+.checkout-confirm-btn-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+.checkout-confirm-btn-row .btn {
+  flex: 1;
+  font-size: 1.1em;
+}
+#checkoutConfirmOverlay.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.25);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#checkoutConfirmOverlay.hidden {
+  display: none;
+}
+.checkout-confirm-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+#btnJust.btn {
+  height: 48px;
+  font-size: 1.1em;
+  padding: 0;
+  border-radius: 8px;
+  flex: 1 1 0;           /* 電卓ボタンと同じ比率で可変 */
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+#payInput {
+  height: 48px;
+  font-size: 1.2em;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 2px solid #1976d2;
+  min-width: 0;
+  box-sizing: border-box;
+  flex: 2 2 0;           /* 電卓ボタン2つ分の比率で可変 */
+}
+
+/* 電卓ボタンのサイズを合わせる */
+.calc-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.calc-btn {
+  height: 48px;
+  font-size: 1.1em;
+  border-radius: 8px;
+  border: 1px solid #bbb;
+  background: #fafafa;
+  cursor: pointer;
+  flex: 1 1 0;           /* 1つ分の比率で可変 */
+  padding: 0;
+  box-sizing: border-box;
+}

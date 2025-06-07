@@ -53,6 +53,8 @@ const checkoutPanel = document.querySelector('.checkout-panel');
 const btnKaikei = document.getElementById('btnKaikei');
 const checkoutBackBtn = document.querySelector('.checkout-bottom-bar .back-btn');
 
+const checkoutBtn = document.querySelector('.checkout-btn');
+
 let items = []; // 買い物リスト全件
 
 // ------------------------------
@@ -74,19 +76,27 @@ window.addEventListener("load", () => {
 // ------------------------------
 // タブ切替処理（買い子/売り子）
 // ------------------------------
-tabKaiko.addEventListener("click", () => {
+tabKaiko.addEventListener("click", (e) => {
+  if (checkoutPanel.style.display !== "none") {
+    const proceed = tryHideCheckoutPanel(e);
+    if (!proceed) return;
+  }
   tabKaiko.classList.add("active");
   tabUriko.classList.remove("active");
   sectionKaiko.classList.remove("hidden");
   sectionUriko.classList.add("hidden");
-  urikoButtons.classList.add("hidden"); // ←追加
+  urikoButtons.classList.add("hidden");
 });
-tabUriko.addEventListener("click", () => {
+tabUriko.addEventListener("click", (e) => {
+  if (checkoutPanel.style.display !== "none") {
+    const proceed = tryHideCheckoutPanel(e);
+    if (!proceed) return;
+  }
   tabUriko.classList.add("active");
   tabKaiko.classList.remove("active");
   sectionUriko.classList.remove("hidden");
   sectionKaiko.classList.add("hidden");
-  urikoButtons.classList.remove("hidden"); // ←追加
+  urikoButtons.classList.remove("hidden");
 });
 
 // ------------------------------
@@ -489,28 +499,45 @@ function showProductPopup(product = null, idx = null) {
     const memo = document.getElementById("popupProductMemo").value;
     let imageUrl = product && product.imageUrl ? product.imageUrl : "https://placehold.co/120x120?text=No+Image";
 
-    function saveAndClose(url) {
-      const newProduct = { title, type, shin, age, price, stock, memo, imageUrl: url };
-      if (product && idx !== null) {
-        products[idx] = newProduct;
-      } else {
-        products.push(newProduct);
-      }
-      localStorage.setItem("urikoProducts", JSON.stringify(products));
-      renderProductList();
-      productPopupOverlay.classList.add("hidden");
-      productPopupContent.innerHTML = "";
-    }
-
+    const popupProductImage = document.getElementById("popupProductImage");
     if (popupProductImage.files && popupProductImage.files[0]) {
       const reader = new FileReader();
       reader.onload = function(e) {
-        saveAndClose(e.target.result);
+        imageUrl = e.target.result;
+        saveAndClose();
       };
       reader.readAsDataURL(popupProductImage.files[0]);
     } else {
-      saveAndClose(imageUrl);
+      saveAndClose();
     }
+
+    function saveAndClose() {
+  const newProduct = { title, type, shin, age, price, stock, memo, imageUrl };
+  let shouldUpdate = false;
+  if (product) {
+    for (const key of Object.keys(newProduct)) {
+      // 文字列比較に統一
+      if (String(newProduct[key]) !== String(product[key])) {
+        shouldUpdate = true;
+        break;
+      }
+    }
+  } else {
+    shouldUpdate = true; // 新規登録
+  }
+
+  if (shouldUpdate) {
+    if (typeof idx === "number" && idx >= 0) {
+      products[idx] = newProduct; // 編集時は上書き
+    } else {
+      products.push(newProduct);  // 新規時は追加
+    }
+    localStorage.setItem("urikoProducts", JSON.stringify(products));
+    renderProductList();
+  }
+  productPopupOverlay.classList.add("hidden");
+  productPopupContent.innerHTML = "";
+}
   };
 
   // 削除
@@ -527,10 +554,14 @@ function showProductPopup(product = null, idx = null) {
   }
 
   productPopupOverlay.classList.remove("hidden");
+
 }
 
 // ＋ボタンで新規登録ポップアップ
 btnAddProduct.addEventListener("click", () => {
+  // 商品一覧画面を表示、商品登録フォームを非表示
+  productListView.classList.remove("hidden");
+  productFormView.classList.add("hidden");
   showProductPopup();
 });
 
@@ -550,7 +581,7 @@ function renderProductList() {
     img.src = p.imageUrl || "https://placehold.co/120x120?text=No+Image";
     img.style.cursor = "pointer";
     img.addEventListener("click", () => {
-      showProductPopup(p, idx);
+      showProductPopup(p, idx); // ←ここで必ずidxを渡す
     });
     imgWrap.appendChild(img);
 
@@ -759,5 +790,114 @@ if (btnKaikei && checkoutPanel) {
     productListView.classList.add("hidden");
     productFormView.classList.add("hidden");
     renderCheckoutProducts(); // ←ここで会計画面の商品一覧を描画
+  });
+}
+
+// ------------------------------
+// 会計確認画面
+// ------------------------------
+// --- 会計確認画面の表示 ---
+function showCheckoutConfirm() {
+  // 1. 選択アイテム取得
+  const counts = window.checkoutCounts || {};
+  const selected = products
+    .map((p, idx) => ({ ...p, count: counts[idx] || 0 }))
+    .filter(p => p.count > 0);
+
+  // 2. 合計金額計算
+  const total = selected.reduce((sum, p) => sum + (Number(p.price) || 0) * p.count, 0);
+
+  // 3. 会計確認用HTML生成
+  let html = `
+    <div class="checkout-confirm-panel">
+      <div class="checkout-confirm-list-scroll">
+        <div class="checkout-confirm-list-grid">
+          ${selected.map(p => `
+            <div class="checkout-confirm-item">
+              <span class="item-title">${escapeHtml(p.title)}</span>
+              <span class="item-price">￥${p.price}</span>
+              <span class="item-mult">×${p.count}</span>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+      <div class="checkout-confirm-total">合計：<span id="checkoutTotal">${total}</span>円</div>
+      <div class="checkout-confirm-row">
+        <input type="number" id="payInput" placeholder="金額" style="width:100px; font-size:1.2em;">
+        <button id="btnJust" class="btn">ぴったり</button>
+      </div>
+      <div class="checkout-confirm-calc" id="checkoutCalcPad"></div>
+      <div class="checkout-confirm-btn-row">
+        <button id="btnCheckoutBack" class="btn">戻る</button>
+        <button id="btnCheckoutOk" class="btn">会計</button>
+      </div>
+    </div>
+  `;
+
+  // 4. モーダルやパネルで表示
+  let overlay = document.getElementById("checkoutConfirmOverlay");
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.id = "checkoutConfirmOverlay";
+    overlay.className = "overlay";
+    document.body.appendChild(overlay);
+  }
+  overlay.innerHTML = html;
+  overlay.classList.remove("hidden");
+
+  // 電卓パッド生成
+  renderCalcPad();
+
+  // ぴったりボタン
+  document.getElementById("btnJust").onclick = () => {
+    document.getElementById("payInput").value = total;
+  };
+
+  // 戻るボタン
+  document.getElementById("btnCheckoutBack").onclick = () => {
+    overlay.classList.add("hidden");
+    // 会計画面に戻る（選択情報はwindow.checkoutCountsに残るのでそのまま）
+    checkoutPanel.style.display = "flex";
+  };
+
+  // 会計ボタン
+  document.getElementById("btnCheckoutOk").onclick = () => {
+    alert("会計処理を実装してください");
+    // 必要に応じてここで選択数クリアや画面遷移
+  };
+}
+
+// 電卓パッド描画
+function renderCalcPad() {
+  const pad = document.getElementById("checkoutCalcPad");
+  if (!pad) return;
+  const keys = [
+    ["7","8","9"],
+    ["4","5","6"],
+    ["1","2","3"],
+    ["0","00","C"]
+  ];
+  pad.innerHTML = keys.map(row =>
+    `<div class="calc-row">${row.map(k =>
+      `<button class="calc-btn" data-key="${k}">${k}</button>`
+    ).join("")}</div>`
+  ).join("");
+  pad.querySelectorAll(".calc-btn").forEach(btn => {
+    btn.onclick = () => {
+      const input = document.getElementById("payInput");
+      if (!input) return;
+      if (btn.dataset.key === "C") {
+        input.value = "";
+      } else {
+        input.value += btn.dataset.key;
+      }
+    };
+  });
+}
+
+// 会計画面の会計ボタン押下で確認画面へ
+if (checkoutBtn) {
+  checkoutBtn.addEventListener('click', () => {
+    showCheckoutConfirm();
   });
 }
