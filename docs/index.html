@@ -48,7 +48,7 @@
       </div>
       <div id="productList" style="display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;"></div>
       <div style="display:flex;justify-content:center;margin-top:16px;">
-        <button id="btnProductBack" class="btn" style="width:80px;">🔙</button>
+        <button id="btnProductBack" class="btn" style="width:80px;">↩</button>
       </div>
     </div>
     <!-- 商品登録フォーム（従来のフォームはhiddenのまま） -->
@@ -135,15 +135,43 @@
       </div>
     </div>
     <div class="checkout-bottom-bar">
-      <button class="back-btn">🔙</button>
+      <button class="back-btn">↩</button>
       <button class="checkout-btn">会計</button>
     </div>
   </div>
 
-  <!-- 商品登録ポップアップ（動的生成される） -->
-  <!-- <div id="productPopupOverlay" class="overlay hidden">...</div> -->
+  <!-- 会計確認画面テンプレート -->
+<template id="checkout-confirm-template">
+  <div class="checkout-confirm-panel">
+    <div class="checkout-confirm-list-scroll">
+      <div class="checkout-confirm-list-grid"></div>
+    </div>
+    <div class="checkout-confirm-total">合計：<span id="checkoutTotal"></span>円</div>
+    <div class="checkout-confirm-row">
+      <input type="number" id="payInput" placeholder="金額">
+      <button id="btnJust" class="btn">ぴったり</button>
+    </div>
+    <div class="checkout-confirm-calc" id="checkoutCalcPad"></div>
+    <div class="checkout-confirm-btn-row">
+      <button id="btnCheckoutBack" class="btn">戻る</button>
+      <button id="btnCheckoutOk" class="btn">会計</button>
+    </div>
+  </div>
+</template>
+
+<!-- お釣り・年齢確認ポップアップテンプレート -->
+<template id="change-popup-template">
+  <div class="checkout-confirm-panel" style="text-align:center;">
+    <div class="change-message"></div>
+    <div class="age-check"></div>
+    <div style="margin-top:18px;">
+      <button id="btnKaikeiNew" class="btn">新規</button>
+    </div>
+  </div>
+</template>
 
   <!-- スクリプト -->
   <script src="./js/script.js"></script>
+  
 </body>
 </html>

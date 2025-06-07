@@ -2,7 +2,7 @@
 // グローバル変数・DOM取得
 // ------------------------------
 const tabKaiko = document.getElementById("tabKaiko");
-const tabUriko = document.getElementById("tabUriko"); // 今回使わないが設置のみ
+const tabUriko = document.getElementById("tabUriko");
 const sectionKaiko = document.getElementById("sectionKaiko");
 const sectionUriko = document.getElementById("sectionUriko");
 
@@ -63,7 +63,8 @@ let items = []; // 買い物リスト全件
 window.addEventListener("load", () => {
   // 初回タブであればデータをクリア
   if (!sessionStorage.getItem("tabInitialized")) {
-    localStorage.removeItem("kaikoItems"); // ←ここで保存データ削除
+    localStorage.removeItem("kaikoItems"); 
+    localStorage.removeItem("urikoProducts");
     sessionStorage.setItem("tabInitialized", "true");
   }
 
@@ -492,7 +493,7 @@ function showProductPopup(product = null, idx = null) {
     </div>
     <!-- 4行目: ボタン -->
     <div class="popup-btn-row">
-      <button id="popupProductBack" class="btn" type="button">🔙</button>
+      <button id="popupProductBack" class="btn" type="button">↩</button>
       <button id="popupProductRegister" class="btn" type="button">${product ? "更新" : "登録"}</button>
       ${product !== null ? `<button id="popupProductDelete" class="btn" type="button" style="background:#d32f2f;">削除</button>` : ""}
     </div>
@@ -611,7 +612,7 @@ function renderProductList() {
     img.src = p.imageUrl || "https://placehold.co/120x120?text=No+Image";
     img.style.cursor = "pointer";
     img.addEventListener("click", () => {
-      showProductPopup(p, idx); // ←ここで必ずidxを渡す
+      showProductPopup(p, idx); 
     });
     imgWrap.appendChild(img);
 
@@ -802,34 +803,7 @@ function showCheckoutConfirm() {
   // 2. 合計金額計算
   const total = selected.reduce((sum, p) => sum + (Number(p.price) || 0) * p.count, 0);
 
-  // 3. 会計確認用HTML生成
-  let html = `
-    <div class="checkout-confirm-panel">
-      <div class="checkout-confirm-list-scroll">
-        <div class="checkout-confirm-list-grid">
-          ${selected.map(p => `
-            <div class="checkout-confirm-item">
-              <span class="item-title">${escapeHtml(p.title)}</span>
-              <span class="item-price">￥${p.price}</span>
-              <span class="item-mult">×${p.count}</span>
-            </div>
-          `).join("")}
-        </div>
-      </div>
-      <div class="checkout-confirm-total">合計：<span id="checkoutTotal">${total}</span>円</div>
-      <div class="checkout-confirm-row">
-        <input type="number" id="payInput" placeholder="金額" style="width:100px; font-size:1.2em;">
-        <button id="btnJust" class="btn">ぴったり</button>
-      </div>
-      <div class="checkout-confirm-calc" id="checkoutCalcPad"></div>
-      <div class="checkout-confirm-btn-row">
-        <button id="btnCheckoutBack" class="btn">戻る</button>
-        <button id="btnCheckoutOk" class="btn">会計</button>
-      </div>
-    </div>
-  `;
-
-  // 4. モーダルやパネルで表示
+  // 3. テンプレートから会計確認画面を複製
   let overlay = document.getElementById("checkoutConfirmOverlay");
   if (!overlay) {
     overlay = document.createElement("div");
@@ -837,26 +811,41 @@ function showCheckoutConfirm() {
     overlay.className = "overlay";
     document.body.appendChild(overlay);
   }
-  overlay.innerHTML = html;
+  overlay.innerHTML = "";
+  const template = document.getElementById("checkout-confirm-template");
+  overlay.appendChild(document.importNode(template.content, true));
   overlay.classList.remove("hidden");
+
+  // 商品リストを流し込む
+  const listGrid = overlay.querySelector(".checkout-confirm-list-grid");
+  listGrid.innerHTML = selected.map(p => `
+    <div class="checkout-confirm-item">
+      <span class="item-title">${escapeHtml(p.title)}</span>
+      <span class="item-price">￥${p.price}</span>
+      <span class="item-mult">×${p.count}</span>
+    </div>
+  `).join("");
+
+  // 合計金額
+  overlay.querySelector("#checkoutTotal").textContent = total;
 
   // 電卓パッド生成
   renderCalcPad();
 
   // ぴったりボタン
-  document.getElementById("btnJust").onclick = () => {
-    document.getElementById("payInput").value = total;
+  overlay.querySelector("#btnJust").onclick = () => {
+    overlay.querySelector("#payInput").value = total;
     showChangePopup(total, total, selected);
   };
 
   // 戻るボタン
-  document.getElementById("btnCheckoutBack").onclick = () => {
+  overlay.querySelector("#btnCheckoutBack").onclick = () => {
     overlay.classList.add("hidden");
   };
 
   // 会計ボタン
-  document.getElementById("btnCheckoutOk").onclick = () => {
-    const payInput = document.getElementById("payInput");
+  overlay.querySelector("#btnCheckoutOk").onclick = () => {
+    const payInput = overlay.querySelector("#payInput");
     const pay = Number(payInput.value);
     if (!pay || pay < total) {
       alert("金額が未入力、または合計金額より少ないです");
@@ -867,9 +856,7 @@ function showCheckoutConfirm() {
 
   // お釣り・年齢確認ポップアップ
   function showChangePopup(pay, total, selectedItems) {
-    // 年齢確認が必要な商品が含まれているか
     const hasR18 = selectedItems.some(p => p.age === "r18");
-    // お釣り計算
     const change = pay - total;
 
     // 18歳以上の生年月日（今日基準）
@@ -879,7 +866,6 @@ function showCheckoutConfirm() {
       const y = now.getFullYear() - 18;
       const m = now.getMonth() + 1;
       const d = now.getDate();
-      // 和暦計算
       let wareki = "";
       if (y >= 2019) {
         wareki = `令和${y - 2018}年${m}月${d}日以前`;
@@ -889,17 +875,14 @@ function showCheckoutConfirm() {
         wareki = `昭和${y - 1925}年${m}月${d}日以前`;
       }
       ageCheckHtml = `
-        <div style="color:#d32f2f; font-weight:bold; margin-top:12px;">※年齢確認を忘れずに！</div>
-        <div style="margin-top:4px;">${y}年${m}月${d}日（${wareki}）生まれ以前が18歳以上です</div>
+        <div class="age-check-alert">※年齢確認を忘れずに！</div>
+        <div class="age-check-date">${y}年${m}月${d}日（${wareki}）生まれ以前が18歳以上です</div>
       `;
     }
 
     // 売上記録
     let sales = JSON.parse(localStorage.getItem("sales") || "[]");
-    let saleTotal = 0;
     selectedItems.forEach(item => {
-      saleTotal += (Number(item.price) || 0) * item.count;
-      // 売上個数・金額を記録
       sales.push({
         title: item.title,
         price: item.price,
@@ -918,17 +901,12 @@ function showCheckoutConfirm() {
     window.checkoutCounts = {};
 
     // ポップアップ内容
-    overlay.innerHTML = `
-      <div class="checkout-confirm-panel" style="text-align:center;">
-        <div style="font-size:1.3em; margin-bottom:10px;">
-          お釣りは${change}円です
-        </div>
-        ${ageCheckHtml}
-        <div style="margin-top:18px;">
-          <button id="btnKaikeiNew" class="btn">新規</button>
-        </div>
-      </div>
-    `;
+    overlay.innerHTML = "";
+    const changeTemplate = document.getElementById("change-popup-template");
+    overlay.appendChild(document.importNode(changeTemplate.content, true));
+    overlay.querySelector(".change-message").innerHTML = `お釣りは${change}円です`;
+    overlay.querySelector(".age-check").innerHTML = ageCheckHtml;
+
     // 新規ボタン
     document.getElementById("btnKaikeiNew").onclick = () => {
       overlay.classList.add("hidden");

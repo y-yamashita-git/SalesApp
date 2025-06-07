@@ -750,13 +750,12 @@ label {
   line-height: 1;
 }
 
-
-/* 会計確認画面レイアウト */
+/* 会計確認画面 */
 .checkout-confirm-panel {
   background: #fff;
   border-radius: 12px;
-  width: 33vw;           /* 画面の1/3の幅 */
-  min-width: 280px;      /* スマホ等で小さくなりすぎないように */
+  width: 33vw;
+  min-width: 280px;
   max-width: 600px;
   margin: 40px auto;
   padding: 16px;
@@ -766,7 +765,7 @@ label {
   gap: 12px;
 }
 .checkout-confirm-list-scroll {
-  max-height: calc(3 * 2.6em + 2 * 8px); /* 3行分の高さ＋2つのgap */
+  max-height: calc(3 * 2.6em + 2 * 8px);
   overflow-y: auto;
   margin-bottom: 8px;
 }
@@ -786,7 +785,7 @@ label {
   padding: 4px 8px;
   width: 100%;
   box-sizing: border-box;
-  min-height: 2.6em; 
+  min-height: 2.6em;
 }
 .checkout-confirm-total {
   font-size: 1.2em;
@@ -798,46 +797,7 @@ label {
   display: flex;
   gap: 8px;
   align-items: center;
-}
-.checkout-confirm-calc {
-  margin: 8px 0;
-}
-.checkout-confirm-btn-row {
-  display: flex;
-  gap: 12px;
-  margin-top: 8px;
-}
-.checkout-confirm-btn-row .btn {
-  flex: 1;
-  font-size: 1.1em;
-}
-#checkoutConfirmOverlay.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.25);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-#checkoutConfirmOverlay.hidden {
-  display: none;
-}
-.checkout-confirm-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
   margin-bottom: 0;
-}
-
-#btnJust.btn {
-  height: 48px;
-  font-size: 1.1em;
-  padding: 0;
-  border-radius: 8px;
-  flex: 1 1 0;           /* 電卓ボタンと同じ比率で可変 */
-  min-width: 0;
-  box-sizing: border-box;
 }
 
 #payInput {
@@ -848,10 +808,34 @@ label {
   border: 2px solid #1976d2;
   min-width: 0;
   box-sizing: border-box;
-  flex: 2 2 0;           /* 電卓ボタン2つ分の比率で可変 */
+  flex: 2 2 0; /* 電卓ボタン2つ分の比率で可変 */
 }
 
-/* 電卓ボタンのサイズを合わせる */
+#btnJust.btn {
+  height: 48px;
+  font-size: 1.1em;
+  padding: 0;
+  border-radius: 8px;
+  flex: 1 1 0; /* 電卓ボタン1つ分の比率で可変 */
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.checkout-confirm-btn-row {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.checkout-confirm-btn-row .btn {
+  height: 48px;
+  min-width: 96px;
+  font-size: 1.1em;
+  border-radius: 8px;
+  box-sizing: border-box;
+  padding: 0;
+  flex: 1 1 0;
+}
 .calc-row {
   display: flex;
   gap: 8px;
@@ -864,7 +848,15 @@ label {
   border: 1px solid #bbb;
   background: #fafafa;
   cursor: pointer;
-  flex: 1 1 0;           /* 1つ分の比率で可変 */
+  flex: 1 1 0;
   padding: 0;
   box-sizing: border-box;
+}
+.age-check-alert {
+  color: #d32f2f;
+  font-weight: bold;
+  margin-top: 12px;
+}
+.age-check-date {
+  margin-top: 4px;
 }
