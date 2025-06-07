@@ -126,7 +126,7 @@
     </div>
 
   <!-- 会計画面レイアウト -->
-  <div class="checkout-panel" style="display:none; flex-direction:column; height:100%;">
+  <div class="checkout-panel" style="flex-direction:column; height:100%; display:none;">
     <div class="checkout-tabs">
       <button class="tab active">会計</button>
       <button class="tab">取り置き</button>
@@ -142,6 +142,42 @@
     </div>
   </div>
 
+<!-- 取り置きリスト画面（買い子タブ風レイアウト） -->
+<div class="reserve-list-panel" style="display:none;">
+  <div class="reserve-list-title">取り置きリスト</div>
+  <!-- メッセージ欄（必要な場合のみJSで表示） -->
+  <div class="reserve-list-message" style="margin-bottom:8px; color:#1976d2; display:none;">
+    ※チェックしたら取り置き済みとして扱います
+  </div>
+  <div class="reserve-list-scroll">
+    <!-- ヘッダー行 -->
+    <div class="reserve-list-header">
+      <span class="reserve-list-header-name">名前</span>
+      <span class="reserve-list-header-status">引取状況</span>
+    </div>
+    <div class="reserve-list-grid">
+      <!-- JSでリストがここに挿入されます -->
+    </div>
+  </div>
+  <div class="reserve-list-btn-row">
+    <button id="btnReserveBack" class="btn">↩</button>
+    <button id="btnReserveNew" class="btn">新規登録</button>
+  </div>
+</div>
+
+<!-- 取り置きリスト新規登録用ポップアップ -->
+<div id="reserveProductPopup" class="overlay hidden">
+  <div class="popup-content">
+    <div class="popup-title">取り置き商品選択</div>
+    <input type="text" id="reservePersonName" class="reserve-person-name" placeholder="名前" style="width:100%;margin-bottom:12px;padding:8px;font-size:1em;">
+    <div id="reserveProductGrid" class="reserve-product-grid"></div>
+    <div class="popup-btn-row">
+      <button id="btnReserveProductCancel" class="btn">取消</button>
+      <button id="btnReserveProductOk" class="btn">OK</button>
+    </div>
+  </div>
+</div>
+
   <!-- 会計確認画面テンプレート -->
 <template id="checkout-confirm-template">
   <div class="checkout-confirm-panel">
@@ -155,7 +191,7 @@
     </div>
     <div class="checkout-confirm-calc" id="checkoutCalcPad"></div>
     <div class="checkout-confirm-btn-row">
-      <button id="btnCheckoutBack" class="btn"></button>
+      <button id="btnCheckoutBack" class="btn">↩</button>
       <button id="btnCheckoutOk" class="btn">会計</button>
     </div>
   </div>

@@ -55,6 +55,27 @@ const checkoutBackBtn = document.querySelector('.checkout-bottom-bar .back-btn')
 
 const checkoutBtn = document.querySelector('.checkout-btn');
 
+
+// 取り置きリスト
+const reservePanel = document.querySelector('.reserve-list-panel');
+const checkoutTabs = document.querySelectorAll('.checkout-panel .tab');
+const reserveTab = checkoutTabs[1];
+const kaikeiTab = checkoutTabs[0];
+
+const checkoutProductsScroll = document.querySelector('.checkout-products-scroll');
+const checkoutBottomBar = document.querySelector('.checkout-bottom-bar');
+
+// 取り置きリスト新規登録ポップアップ表示
+// 取り置きリストデータ
+let reserves = [];
+
+const reserveProductPopup = document.getElementById("reserveProductPopup");
+const reserveProductGrid = document.getElementById("reserveProductGrid");
+const btnReserveProductCancel = document.getElementById("btnReserveProductCancel");
+const btnReserveProductOk = document.getElementById("btnReserveProductOk");
+
+
+
 let items = []; // 買い物リスト全件
 
 // ------------------------------
@@ -65,10 +86,12 @@ window.addEventListener("load", () => {
   if (!sessionStorage.getItem("tabInitialized")) {
     localStorage.removeItem("kaikoItems"); 
     localStorage.removeItem("urikoProducts");
+    localStorage.removeItem("reserveItems");
     sessionStorage.setItem("tabInitialized", "true");
   }
 
   loadFromStorage();
+  loadReservesFromStorage();
   renderList();
   registerServiceWorker();
   requestNotificationPermission();
@@ -78,7 +101,32 @@ window.addEventListener("load", () => {
 // タブ切替処理（買い子/売り子）
 // ------------------------------
 tabKaiko.addEventListener("click", (e) => {
-  // tryHideCheckoutPanelは残す（移動メッセージの概念）
+  // 取り置きタブがアクティブな場合は確認メッセージを出さずに切り替え
+  if (reserveTab.classList.contains('active')) {
+    // 取り置きリストも非表示
+    reservePanel.style.display = 'none';
+    // 会計タブを初期状態に
+    kaikeiTab.classList.add('active');
+    reserveTab.classList.remove('active');
+    if (checkoutProductsScroll) checkoutProductsScroll.style.display = '';
+    if (checkoutBottomBar) checkoutBottomBar.style.display = '';
+    reservePanel.style.display = 'none';
+    checkoutPanel.style.display = 'none';
+
+    // ここで「かい子」タブの表示切り替えも行う
+    tabKaiko.classList.add("active");
+    tabUriko.classList.remove("active");
+    sectionKaiko.classList.remove("hidden");
+    sectionUriko.classList.add("hidden");
+    urikoButtons.classList.add("hidden");
+
+    // デフォルトの動作を止める（これがないと2重で動く場合がある）
+    e.preventDefault();
+    e.stopPropagation();
+    return;
+  }
+
+  // 通常の会計画面からの移動時のみ確認メッセージ
   if (checkoutPanel.style.display !== "none") {
     const proceed = tryHideCheckoutPanel(e);
     if (!proceed) return;
@@ -90,11 +138,17 @@ tabKaiko.addEventListener("click", (e) => {
     const payInput = document.getElementById("payInput");
     if (payInput) payInput.value = "";
   }
+  // タブ切り替え
+  kaikeiTab.classList.add('active');
+  reserveTab.classList.remove('active');
   tabKaiko.classList.add("active");
   tabUriko.classList.remove("active");
   sectionKaiko.classList.remove("hidden");
   sectionUriko.classList.add("hidden");
   urikoButtons.classList.add("hidden");
+  reservePanel.style.display = 'none';
+  if (checkoutProductsScroll) checkoutProductsScroll.style.display = '';
+  if (checkoutBottomBar) checkoutBottomBar.style.display = '';
 });
 
 // 売り子タブは会計画面が開いている間は押せなくする
@@ -110,8 +164,9 @@ tabUriko.addEventListener("click", (e) => {
   sectionUriko.classList.remove("hidden");
   sectionKaiko.classList.add("hidden");
   productListView.classList.add("hidden");
- productFormView.classList.add("hidden");
+  productFormView.classList.add("hidden");
   urikoButtons.classList.remove("hidden");
+  reservePanel.style.display = 'none';
 });
 
 // 会計画面から他タブへ移動時の確認メッセージ
@@ -948,4 +1003,284 @@ if (checkoutBtn) {
   checkoutBtn.addEventListener('click', () => {
     showCheckoutConfirm();
   });
+}
+
+// ------------------------------
+// 取り置きリスト画面
+// ------------------------------
+// 取り置きリスト画面の表示・非表示制御
+function showReserveList(list = reserves, options = {}) {
+  const panel = document.querySelector('.reserve-list-panel');
+  if (!panel) return;
+  panel.style.display = 'flex';
+
+  // チェック済みは下に来るようソート
+  const sorted = [...list].sort((a, b) => {
+    if (a.checked === b.checked) {
+      return a.name.localeCompare(b.name, 'ja');
+    }
+    return a.checked ? 1 : -1;
+  });
+
+  // 名前・状況（チェックボックス）で表示、チェック済みは行を灰色に
+  const grid = panel.querySelector('.reserve-list-grid');
+  if (grid) {
+    grid.innerHTML = sorted.map((r, i) => `
+      <div class="reserve-list-item" style="
+        display:flex;
+        align-items:center;
+        gap:12px;
+        ${r.checked ? 'background:#ccc;' : ''}
+        max-width: 480px;
+        margin: 0 auto;
+        width: 100%;
+      ">
+        <span style="font-weight:bold;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+          ${escapeHtml(r.name)}
+        </span>
+        <input type="checkbox" ${r.checked ? "checked" : ""} style="margin-right:0;flex:0 0 auto;" data-idx="${i}">
+      </div>
+    `).join("");
+    // チェックボックス変更時に保存＆再描画
+    grid.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.onchange = (e) => {
+        const idx = Number(cb.dataset.idx);
+        reserves[idx].checked = cb.checked;
+        saveReservesToStorage();
+        showReserveList(); // 状況表示を即時反映
+      };
+    });
+  }
+
+  // メッセージ欄の表示/非表示
+  const msgElem = panel.querySelector('.reserve-list-message');
+  if (msgElem) {
+    if (options.message === false) {
+      msgElem.style.display = 'none';
+    } else {
+      msgElem.style.display = '';
+      msgElem.textContent = '※チェックしたら取り置き済みとして扱います';
+    }
+  }
+}
+
+// 初期化時に一度だけイベント登録
+window.addEventListener("DOMContentLoaded", () => {
+  // 新規登録ボタン
+  const btnNew = document.getElementById("btnReserveNew");
+  if (btnNew) {
+    btnNew.onclick = () => {
+      showReserveProductPopup();
+    };
+  }
+  // 戻るボタン
+  const btnBack = document.getElementById("btnReserveBack");
+  if (btnBack) {
+    btnBack.onclick = () => {
+      const panel = document.querySelector('.reserve-list-panel');
+      panel.style.display = 'none';
+
+      // 会計画面の取り置きタブから戻る場合は会計タブを初期化し会計画面も非表示
+      if (reserveTab.classList.contains('active')) {
+        kaikeiTab.classList.add('active');
+        reserveTab.classList.remove('active');
+        if (checkoutProductsScroll) checkoutProductsScroll.style.display = '';
+        if (checkoutBottomBar) checkoutBottomBar.style.display = '';
+        reservePanel.style.display = 'none';
+        checkoutPanel.style.display = 'none';
+        // 売り子タブの初期画面も表示
+        tabUriko.classList.add("active");
+        tabKaiko.classList.remove("active");
+        sectionUriko.classList.remove("hidden");
+        sectionKaiko.classList.add("hidden");
+        if (urikoButtons) urikoButtons.classList.remove("hidden");
+        return;
+      }
+
+      // 売り子タブの初期画面に遷移
+      if (typeof tabUriko !== "undefined" && typeof tabKaiko !== "undefined") {
+        tabUriko.classList.add("active");
+        tabKaiko.classList.remove("active");
+      }
+      if (typeof sectionUriko !== "undefined" && typeof sectionKaiko !== "undefined") {
+        sectionUriko.classList.remove("hidden");
+        sectionKaiko.classList.add("hidden");
+      }
+      if (typeof urikoButtons !== "undefined" && urikoButtons) {
+        urikoButtons.classList.remove("hidden");
+      }
+      // 会計画面は非表示
+      if (typeof checkoutPanel !== "undefined" && checkoutPanel) {
+        checkoutPanel.style.display = "none";
+      }
+    };
+  }
+});
+
+// 会計画面のタブ切り替え
+reserveTab.addEventListener('click', () => {
+  reserveTab.classList.add('active');
+  kaikeiTab.classList.remove('active');
+  if (checkoutProductsScroll) checkoutProductsScroll.style.display = 'none';
+  if (checkoutBottomBar) checkoutBottomBar.style.display = 'none';
+  // 会計画面の取り置きリストはメッセージなし
+  reservePanel.style.display = 'flex';
+  checkoutPanel.style.display = 'flex';
+  
+  showReserveList(reserves, { message: false });
+});
+
+kaikeiTab.addEventListener('click', () => {
+  kaikeiTab.classList.add('active');
+  reserveTab.classList.remove('active');
+  if (checkoutProductsScroll) checkoutProductsScroll.style.display = '';
+  if (checkoutBottomBar) checkoutBottomBar.style.display = '';
+  reservePanel.style.display = 'none';
+  checkoutPanel.style.display = 'flex';
+});
+
+// 「取り置きリスト」ボタン押下時は買い子風でメッセージあり
+document.querySelectorAll("button").forEach(btn => {
+  if (btn.textContent.includes("取置きリスト") || btn.textContent.includes("取り置きリスト")) {
+    btn.addEventListener('click', () => {
+      reservePanel.style.display = 'flex';
+      checkoutPanel.style.display = 'none';
+      if (checkoutProductsScroll) checkoutProductsScroll.style.display = '';
+      if (checkoutBottomBar) checkoutBottomBar.style.display = '';
+      reserveTab.classList.add('active');
+      kaikeiTab.classList.remove('active');
+      if (typeof urikoButtons !== "undefined" && urikoButtons) urikoButtons.classList.add("hidden");
+      // ここでグリッドを必ず表示
+      showReserveList(reserves, { message: true });
+    });
+  }
+});
+
+// ------------------------------
+// 取り置きリスト追加登録画面
+// ------------------------------
+// 取り置きリスト保存・読込
+function saveReservesToStorage() {
+  localStorage.setItem("reserveItems", JSON.stringify(reserves));
+}
+function loadReservesFromStorage() {
+  const saved = localStorage.getItem("reserveItems");
+  if (saved) {
+    reserves = JSON.parse(saved);
+  } else {
+    reserves = [];
+  }
+}
+
+function showReserveProductPopup() {
+  // 商品リストをグリッドで表示
+  const counts = {};
+  reserveProductGrid.innerHTML = products.map((p, idx) => `
+    <div class="reserve-product-card" data-idx="${idx}">
+      <div class="reserve-product-img-wrap">
+        <img src="${p.imageUrl || "https://placehold.co/120x120?text=No+Image"}" alt="${escapeHtml(p.title)}">
+        <span class="reserve-product-count-badge" style="display:none;"></span>
+        <button class="reserve-product-minus-btn" type="button" style="display:none;">−</button>
+      </div>
+      <div class="reserve-product-title">${escapeHtml(p.title)}</div>
+    </div>
+  `).join("");
+
+  // カウント操作
+  reserveProductGrid.querySelectorAll(".reserve-product-card").forEach(card => {
+    const idx = Number(card.dataset.idx);
+    const imgWrap = card.querySelector('.reserve-product-img-wrap');
+    const img = imgWrap.querySelector('img');
+    const minusBtn = imgWrap.querySelector('.reserve-product-minus-btn');
+    const countBadge = imgWrap.querySelector('.reserve-product-count-badge');
+    counts[idx] = 0;
+
+    // 画像クリックでカウント＋
+    img.onclick = () => {
+      if (products[idx].stock !== undefined && counts[idx] >= products[idx].stock) return;
+      counts[idx]++;
+      updateDisplay();
+    };
+
+    // マイナスボタン
+    minusBtn.onclick = (e) => {
+      e.stopPropagation();
+      if (counts[idx] > 0) {
+        counts[idx]--;
+        updateDisplay();
+      }
+    };
+
+    function updateDisplay() {
+      if (counts[idx] > 0) {
+        countBadge.textContent = counts[idx];
+        countBadge.style.display = "flex";
+        minusBtn.style.display = "flex";
+        card.classList.add("selected");
+      } else {
+        countBadge.textContent = "";
+        countBadge.style.display = "none";
+        minusBtn.style.display = "none";
+        card.classList.remove("selected");
+      }
+    }
+  });
+
+  // ポップアップ表示
+  reserveProductPopup.classList.remove("hidden");
+
+  // 取消
+  btnReserveProductCancel.onclick = () => {
+    reserveProductPopup.classList.add("hidden");
+  };
+
+  // OKボタン押下時
+  btnReserveProductOk.onclick = () => {
+  const personName = document.getElementById("reservePersonName").value.trim();
+  if (!personName) {
+    alert("名前を入力してください");
+    return;
+  }
+  // 選択された商品と個数を取得
+  const selectedProducts = [];
+  reserveProductGrid.querySelectorAll(".reserve-product-card").forEach(card => {
+    const idx = Number(card.dataset.idx);
+    if (counts[idx] > 0) {
+      selectedProducts.push({
+        product: products[idx].title,
+        count: counts[idx]
+      });
+    }
+  });
+  if (selectedProducts.length === 0) {
+    alert("商品を1つ以上選択してください");
+    return;
+  }
+  // 名前でひとくくりで追加
+  reserves.push({
+    name: personName,
+    checked: false,
+    items: selectedProducts
+  });
+  saveReservesToStorage();
+  reserveProductPopup.classList.add("hidden");
+  showReserveList();
+  // 在庫数を減らす
+  selectedProducts.forEach(sel => {
+    const prod = products.find(p => p.title === sel.product);
+    if (prod && typeof prod.stock === "number") {
+      prod.stock = Math.max(0, prod.stock - sel.count);
+    }
+  });
+};
+}
+
+// escapeHtmlユーティリティ
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
