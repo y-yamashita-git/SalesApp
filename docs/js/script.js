@@ -1222,8 +1222,23 @@ function showReserveProductPopup(reserve = null, isKaikeiTab = false) {
   // 名前を反映
   nameInput.value = reserve && reserve.name ? reserve.name : "";
   nameInput.disabled = !!isKaikeiTab;
-  btnCancel.textContent = isKaikeiTab ? "戻る" : "取消";
+  btnCancel.textContent = "↩";
   btnOk.textContent = isKaikeiTab ? "会計" : "OK";
+
+  // ★ すでに会計済み（チェック済み）の場合はOKボタンを非活性
+  if (reserve && reserve.checked) {
+    btnOk.disabled = true;
+    btnOk.title = "すでに会計済みです";
+    btnOk.style.background = "#ccc";
+    btnOk.style.color = "#888";
+    btnOk.style.cursor = "not-allowed";
+  } else {
+    btnOk.disabled = false;
+    btnOk.title = "";
+    btnOk.style.background = ""; // デフォルトに戻す
+    btnOk.style.color = "";
+    btnOk.style.cursor = "";
+  }
 
   // 商品ごとの押下数を初期化
   const counts = {};
