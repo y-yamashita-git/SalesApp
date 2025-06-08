@@ -11,6 +11,7 @@ const addNewBtn = document.getElementById("addNewBtn");
 
 const formOverlay = document.getElementById("formOverlay");
 const formCancelBtn = document.getElementById("formCancelBtn");
+const formDeleteBtn = document.getElementById("formDeleteBtn");
 const okFormBtn = document.getElementById("okFormBtn");
 
 const circleInput = document.getElementById("circleName");
@@ -74,6 +75,9 @@ const reserveProductGrid = document.getElementById("reserveProductGrid");
 const btnReserveProductCancel = document.getElementById("btnReserveProductCancel");
 const btnReserveProductOk = document.getElementById("btnReserveProductOk");
 
+// --- 画像のBase64データ ---
+const smileImgBase64 = "img/smile.png";
+const sadImgBase64 = "img/sad.png";
 
 
 let items = []; // 買い物リスト全件
@@ -96,6 +100,7 @@ window.addEventListener("load", () => {
   registerServiceWorker();
   requestNotificationPermission();
 });
+
 
 // ------------------------------
 // タブ切替処理（買い子/売り子）
@@ -190,6 +195,59 @@ function tryHideCheckoutPanel(e) {
 // ------------------------------
 // 買い物リスト描画
 // ------------------------------
+
+function updateSelectBg() {
+  if (select.value === "smile") {
+    select.style.backgroundImage = `url('${smileImgBase64}')`;
+  } else if (select.value === "sad") {
+    select.style.backgroundImage = `url('${sadImgBase64}')`;
+  } else {
+    select.style.backgroundImage = "";
+  }
+}
+
+// カスタムドロップダウンのサンプルJS
+document.addEventListener("DOMContentLoaded", () => {
+  const dropdown = document.getElementById("custom-dropdown");
+  const selected = dropdown.querySelector(".selected");
+  const dropdownList = dropdown.querySelector(".dropdown-list");
+  const selectedImg = document.getElementById("selected-img");
+
+  // 初期値
+  let currentValue = "smile";
+
+  selected.onclick = () => {
+    dropdownList.classList.toggle("hidden");
+  };
+
+  dropdownList.querySelectorAll(".dropdown-item").forEach(item => {
+    item.onclick = () => {
+      currentValue = item.dataset.value;
+      // 画像切り替え
+      if (currentValue === "smile") {
+        selectedImg.src = "img/smile.png";
+        selectedImg.alt = "smile";
+      } else if (currentValue === "sad") {
+        selectedImg.src = "img/sad.png";
+        selectedImg.alt = "sad";
+      } else {
+        selectedImg.src = "";
+        selectedImg.alt = "";
+      }
+      dropdownList.classList.add("hidden");
+      // 必要ならここで値を保存
+      // item.status = currentValue; など
+    };
+  });
+
+  // 外をクリックしたら閉じる
+  document.addEventListener("click", (e) => {
+    if (!dropdown.contains(e.target)) {
+      dropdownList.classList.add("hidden");
+    }
+  });
+});
+
 function renderList() {
   // ソート順を定義（空→悲しい→笑顔）
   const order = {
@@ -198,21 +256,28 @@ function renderList() {
     "smile": 2,
   };
 
-  items.sort((a, b) => order[a.status] - order[b.status]);
-
+  items.sort((a, b) => {
+    // ソート順の定義順で比較
+    const aOrder = order[a.status] !== undefined ? order[a.status] : 99;
+    const bOrder = order[b.status] !== undefined ? order[b.status] : 99;
+    if (aOrder !== bOrder) return aOrder - bOrder;
+    // 同じ順番ならアルファベット順
+    return (a.status || "").localeCompare(b.status || "");
+  });
   listBody.innerHTML = "";
 
   items.forEach((item) => {
     const tr = document.createElement("tr");
 
-    // 取置★マークがある場合は背景黄色
-    if (item.isReserved) {
-      tr.style.backgroundColor = "#fff59d";
-    }
-    // 悲しいか笑顔なら背景グレーアウト
-    if ((item.status === "sad" || item.status === "smile") ) {
-      tr.style.backgroundColor = "#ccc";
-    }
+    // 空白以外を選択した場合は行全体を灰色に
+  if (item.status !== "") {
+    tr.style.background = "#bababa";
+  } 
+  else if (item.isReserved) {
+    tr.style.background = "#ffee89";
+  } else {
+    tr.style.background = "";
+  }
 
     // 取置★マークのセル
     const reservedTd = document.createElement("td");
@@ -227,41 +292,136 @@ function renderList() {
     const timeTd = document.createElement("td");
     timeTd.textContent = item.time || "";
 
-    // 状態セル（プルダウン）
+    // 状態セル（カスタムドロップダウン）
     const statusTd = document.createElement("td");
-    const select = document.createElement("select");
-    const noneOption = document.createElement("option");
-    noneOption.value = "";
-    noneOption.text = "";
-    const smileOption = document.createElement("option");
-    smileOption.value = "smile";
-    smileOption.text = "🙂";
-    const sadOption = document.createElement("option");
-    sadOption.value = "sad";
-    sadOption.text = "😢";
+const dropdown = document.createElement("div");
+dropdown.className = "custom-dropdown";
+dropdown.tabIndex = 0; // キーボード操作用
+// ▼マークと画像を含めた枠線を描画
+dropdown.style.minWidth = "60px";
+dropdown.style.minHeight = "44px";
+dropdown.style.border = "1.5px solid #bbb";
+dropdown.style.borderRadius = "8px";
+dropdown.style.display = "inline-block";
+dropdown.style.position = "relative";
+dropdown.style.boxSizing = "border-box";
+dropdown.style.padding = "0"; // 余白をなくす
 
-    select.appendChild(noneOption);
-    select.appendChild(smileOption);
-    select.appendChild(sadOption);
-    select.value = item.status;
+// 選択中
+const selected = document.createElement("div");
+selected.className = "selected";
+selected.style.minHeight = "44px";
+selected.style.minWidth = "60px";
+selected.style.display = "flex";
+selected.style.alignItems = "center";
+selected.style.justifyContent = "center";
+selected.style.position = "relative";
+selected.style.background = "transparent";
 
-    select.addEventListener("change", (e) => {
-      item.status = e.target.value;
-      saveToStorage();
-      renderList();
+// ▼マーク（CSSで描画）
+const arrow = document.createElement("span");
+arrow.style.position = "absolute";
+arrow.style.right = "0px";
+arrow.style.top = "50%";
+arrow.style.transform = "translateY(-50%)";
+arrow.style.pointerEvents = "none";
+arrow.style.fontSize = "20px";
+arrow.textContent = "▼";
+selected.appendChild(arrow);
+selected.style.justifyContent = "flex-start";
+selected.style.paddingRight = "0px"; 
+
+const selectedImg = document.createElement("img");
+selectedImg.style.width = "36px";
+selectedImg.style.height = "36px";
+selectedImg.style.verticalAlign = "middle";
+if (item.status === "smile") {
+  selectedImg.src = "img/smile.png";
+  selectedImg.alt = "smile";
+  selectedImg.style.visibility = "visible";
+} else if (item.status === "sad") {
+  selectedImg.src = "img/sad.png";
+  selectedImg.alt = "sad";
+  selectedImg.style.visibility = "visible";
+} else {
+  selectedImg.src = "";
+  selectedImg.alt = "";
+  selectedImg.style.visibility = "hidden";
+}
+selected.appendChild(selectedImg);
+
+    // ドロップダウンリスト
+    const dropdownList = document.createElement("div");
+dropdownList.className = "dropdown-list hidden";
+dropdownList.style.minWidth = "60px";
+dropdownList.style.minHeight = "44px";
+
+
+
+[
+  { value: "", img: "" },
+  { value: "smile", img: "img/smile.png" },
+  { value: "sad", img: "img/sad.png" }
+].forEach(opt => {
+  const itemDiv = document.createElement("div");
+  itemDiv.className = "dropdown-item";
+  itemDiv.style.minHeight = "44px";
+  itemDiv.style.minWidth = "60px";
+  if (opt.img) {
+    const img = document.createElement("img");
+    img.src = opt.img;
+    img.style.width = "36px";
+    img.style.height = "36px";
+    itemDiv.appendChild(img);
+  } else {
+    // 空白（何も表示しない）
+    const span = document.createElement("span");
+    span.style.display = "inline-block";
+    span.style.width = "36px";
+    span.style.height = "36px";
+    itemDiv.appendChild(span);
+  }
+  dropdownList.appendChild(itemDiv);
+
+  // クリック時
+  itemDiv.onclick = () => {
+    item.status = opt.value;
+    saveToStorage();
+    renderList();
+  };
+});
+    // ドロップダウン開閉
+    selected.onclick = (e) => {
+      dropdownList.classList.toggle("hidden");
+      e.stopPropagation();
+    };
+    // 外をクリックしたら閉じる
+    document.addEventListener("click", () => {
+      dropdownList.classList.add("hidden");
     });
-    statusTd.appendChild(select);
 
+    dropdown.appendChild(selected);
+    dropdown.appendChild(dropdownList);
+    statusTd.appendChild(dropdown);
+
+    // 行にセルを追加
     tr.appendChild(reservedTd);
     tr.appendChild(circleSpaceTd);
     tr.appendChild(timeTd);
     tr.appendChild(statusTd);
 
+    listBody.appendChild(tr);
+    
     // 「状態」プルダウン押下時はポップアップ表示しない
     tr.addEventListener("click", (e) => {
-      if (e.target.tagName.toLowerCase() === "select") return;
-      showPopup(item);
-    });
+      if (
+    e.target.closest(".custom-dropdown") || // カスタムドロップダウン全体
+    e.target.classList.contains("dropdown-item") // ドロップダウンリストのアイテム
+  ) {
+    return;
+  }
+  showPopup(item);
+});
 
     listBody.appendChild(tr);
   });
@@ -271,13 +431,16 @@ function renderList() {
 // ポップアップ表示処理
 // ------------------------------
 function showPopup(item) {
-  popupCircle.textContent = `サークル名 ：${item.circle}`;
-  popupSpace.textContent = `スペース番号：${item.space}`;
-  popupMemo.textContent = `メモ：${item.memo}`;
-  popupStar.textContent = item.isReserved ? "★" : "";
-  popupTime.textContent = item.isReserved && item.time ? `時間: ${item.time}` : "";
-
-  popupOverlay.classList.remove("hidden");
+  const idx = items.findIndex(i => i.id === item.id);
+  window.editingIdx = idx;
+  document.getElementById("circleName").value = item.circle;
+  document.getElementById("spaceNumber").value = item.space;
+  document.getElementById("memo").value = item.memo;
+  document.getElementById("reserveCheck").checked = !!item.isReserved;
+  document.getElementById("timeInput").value = item.time || "";
+  document.getElementById("timeInput").disabled = !item.isReserved;
+  // ポップアップ表示
+  document.getElementById("formOverlay").classList.remove("hidden");
 }
 
 popupCloseBtn.addEventListener("click", () => {
@@ -288,11 +451,26 @@ popupCloseBtn.addEventListener("click", () => {
 // 新規登録画面表示 & 登録処理
 // ------------------------------
 addNewBtn.addEventListener("click", () => {
+  window.editingIdx = undefined;
   resetForm();
   formOverlay.classList.remove("hidden");
 });
 
 formCancelBtn.addEventListener("click", () => {
+  formOverlay.classList.add("hidden");
+  resetForm();
+});
+
+// 買い物リスト登録画面の取消ボタン押下時
+formDeleteBtn.addEventListener("click", () => {
+  // 編集中の場合は削除確認
+  if (window.editingIdx !== undefined && items[window.editingIdx]) {
+    if (confirm("このリストを削除しますか？")) {
+      items.splice(window.editingIdx, 1);
+      saveToStorage();
+      renderList();
+    }
+  }
   formOverlay.classList.add("hidden");
   resetForm();
 });
@@ -310,18 +488,25 @@ okFormBtn.addEventListener("click", () => {
   }
 
   const newItem = {
-    id: Date.now(),
+    id: window.editingIdx !== undefined && items[window.editingIdx] ? items[window.editingIdx].id : Date.now(),
     circle,
     space,
     memo,
     isReserved,
     time,
-    status: "", // 状態は初期は空
+    status: window.editingIdx !== undefined && items[window.editingIdx] ? items[window.editingIdx].status : "",
     notified5min: false,
     notified10after: false,
   };
 
-  items.push(newItem);
+  if (window.editingIdx !== undefined && items[window.editingIdx]) {
+    // 上書き
+    items[window.editingIdx] = newItem;
+    window.editingIdx = undefined;
+  } else {
+    // 新規
+    items.push(newItem);
+  }
   saveToStorage();
   renderList();
 
@@ -571,7 +756,9 @@ function showProductPopup(product = null, idx = null) {
   };
 
   // 登録・更新
-  document.getElementById("popupProductRegister").onclick = () => {
+  // 登録・更新
+  const btnRegister = document.getElementById("popupProductRegister");
+  btnRegister.onclick = () => {
     const title = document.getElementById("popupProductTitle").value.trim();
     const type = document.querySelector('input[name="popupProductType"]:checked').value;
     const shin = document.querySelector('input[name="popupProductShin"]:checked').value;
@@ -582,44 +769,49 @@ function showProductPopup(product = null, idx = null) {
     let imageUrl = product && product.imageUrl ? product.imageUrl : "https://placehold.co/120x120?text=No+Image";
 
     const popupProductImage = document.getElementById("popupProductImage");
-    if (popupProductImage.files && popupProductImage.files[0]) {
+    const imageFileSelected = popupProductImage.files && popupProductImage.files[0];
+
+    if (imageFileSelected) {
       const reader = new FileReader();
       reader.onload = function(e) {
         imageUrl = e.target.result;
-        saveAndClose();
+        saveAndClose(true);
       };
       reader.readAsDataURL(popupProductImage.files[0]);
     } else {
-      saveAndClose();
+      saveAndClose(false);
     }
 
-    function saveAndClose() {
-  const newProduct = { title, type, shin, age, price, stock, memo, imageUrl };
-  let shouldUpdate = false;
-  if (product) {
-    for (const key of Object.keys(newProduct)) {
-      // 文字列比較に統一
-      if (String(newProduct[key]) !== String(product[key])) {
+    function saveAndClose(imageChanged) {
+      const newProduct = { title, type, shin, age, price, stock, memo, imageUrl };
+      let shouldUpdate = false;
+      if (product) {
+        if (imageChanged) {
+          shouldUpdate = true;
+        } else {
+          for (const key of Object.keys(newProduct)) {
+            if ((product[key] ?? "") !== (newProduct[key] ?? "")) {
+              shouldUpdate = true;
+              break;
+            }
+          }
+        }
+      } else {
         shouldUpdate = true;
-        break;
       }
-    }
-  } else {
-    shouldUpdate = true; // 新規登録
-  }
 
-  if (shouldUpdate) {
-    if (typeof idx === "number" && idx >= 0) {
-      products[idx] = newProduct; // 編集時は上書き
-    } else {
-      products.push(newProduct);  // 新規時は追加
+      if (shouldUpdate) {
+        if (typeof idx === "number" && idx >= 0) {
+          products[idx] = newProduct;
+        } else {
+          products.push(newProduct);
+        }
+        localStorage.setItem("urikoProducts", JSON.stringify(products));
+        renderProductList();
+      }
+      productPopupOverlay.classList.add("hidden");
+      productPopupContent.innerHTML = "";
     }
-    localStorage.setItem("urikoProducts", JSON.stringify(products));
-    renderProductList();
-  }
-  productPopupOverlay.classList.add("hidden");
-  productPopupContent.innerHTML = "";
-}
   };
 
   // 削除
@@ -1228,24 +1420,25 @@ function loadReservesFromStorage() {
 // isKaikeiTab: 会計タブから呼ぶ場合true
 function showReserveProductPopup(reserve = null, isKaikeiTab = false) {
   const nameInput = document.getElementById("reservePersonName");
-  const btnCancel = document.getElementById("btnReserveProductCancel");
+  const btnDelete = document.getElementById("btnReserveProductDelete");
   const btnOk = document.getElementById("btnReserveProductOk");
 
   // 名前を反映
   nameInput.value = reserve && reserve.name ? reserve.name : "";
   nameInput.disabled = !!isKaikeiTab;
-  btnCancel.textContent = "↩";
   btnOk.textContent = isKaikeiTab ? "会計" : "OK";
 
   // ★ すでに会計済み（チェック済み）の場合はOKボタンを非活性
   if (reserve && reserve.checked) {
     btnOk.disabled = true;
+    btnDelete.disabled = true;
     btnOk.title = "すでに会計済みです";
     btnOk.style.background = "#ccc";
     btnOk.style.color = "#888";
     btnOk.style.cursor = "not-allowed";
   } else {
     btnOk.disabled = false;
+    btnDelete.disabled = false;
     btnOk.title = "";
     btnOk.style.background = ""; // デフォルトに戻す
     btnOk.style.color = "";
@@ -1263,16 +1456,18 @@ function showReserveProductPopup(reserve = null, isKaikeiTab = false) {
 
   // 商品リストをグリッドで表示
   reserveProductGrid.innerHTML = products.map((p, idx) => `
-    <div class="reserve-product-card" data-idx="${idx}">
-      <div class="reserve-product-img-wrap">
-        <img src="${p.imageUrl || "https://placehold.co/120x120?text=No+Image"}" alt="${escapeHtml(p.title)}">
-        <span class="reserve-product-count-badge" style="display:${counts[idx] > 0 ? "flex" : "none"};">${counts[idx] > 0 ? counts[idx] : ""}</span>
-        <button class="reserve-product-minus-btn" type="button" style="display:${counts[idx] > 0 ? "flex" : "none"};">−</button>
-      </div>
-      <div class="reserve-product-title">${escapeHtml(p.title)}</div>
+  <div class="reserve-product-card" data-idx="${idx}">
+    <div class="reserve-product-img-wrap">
+      <img src="${p.imageUrl || "https://placehold.co/120x120?text=No+Image"}" alt="${escapeHtml(p.title)}">
+      <span class="reserve-product-count-badge" style="display:${counts[idx] > 0 ? "flex" : "none"};">${counts[idx] > 0 ? counts[idx] : ""}</span>
+      <button class="reserve-product-minus-btn" type="button" style="display:${counts[idx] > 0 ? "flex" : "none"};">−</button>
     </div>
-  `).join("");
-
+    <div class="reserve-product-title" style="display:flex;align-items:center;justify-content:center;gap:6px;">
+      ${p.age === "r18" ? '<span style="color:#d32f2f;font-size:1.1em;">🔞</span>' : ''}
+      <span style="text-align:center;flex:1;">${escapeHtml(p.title)}</span>
+    </div>
+  </div>
+`).join("");
   // カウント操作
   reserveProductGrid.querySelectorAll(".reserve-product-card").forEach(card => {
     const idx = Number(card.dataset.idx);
@@ -1334,10 +1529,27 @@ function showReserveProductPopup(reserve = null, isKaikeiTab = false) {
   // ポップアップ表示
   reserveProductPopup.classList.remove("hidden");
 
-  // 取消
+  // 戻る
   btnReserveProductCancel.onclick = () => {
     reserveProductPopup.classList.add("hidden");
   };
+
+  // 取消
+  btnReserveProductDelete.onclick = () => {
+  // 既存レコードがある場合は削除確認
+  if (reserve) {
+    if (confirm("この取り置きを削除しますか？")) {
+      // reserves配列から該当レコードを削除
+      const idx = reserves.indexOf(reserve);
+      if (idx !== -1) {
+        reserves.splice(idx, 1);
+        saveReservesToStorage();
+        showReserveList();
+      }
+    }
+  }
+  reserveProductPopup.classList.add("hidden");
+};
 
   // OKボタン押下時
   btnReserveProductOk.onclick = () => {
