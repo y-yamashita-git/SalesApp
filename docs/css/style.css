@@ -61,6 +61,7 @@ th {
   border-radius: 4px;
   padding: 10px 0;
   transition: background 0.2s;
+  width: 80px;
 }
 .btn:hover,
 .btn:active {
@@ -936,6 +937,7 @@ label {
   margin-right: auto;
   width: 100%;
   box-sizing: border-box;
+  justify-content: space-between;
 }
 
 .overlay {
