@@ -1478,3 +1478,35 @@ function hideSalesInfoView() {
   const salesInfoView = document.getElementById("salesInfoView");
   if (salesInfoView) salesInfoView.classList.add("hidden");
 }
+
+
+
+// データ保存
+function saveAppData() {
+  const data = {
+    kaikoList: window.kaikoList || [],
+    reserveList: window.reserveList || [],
+    productList: window.productList || [],
+    salesInfo: window.salesInfo || []
+  };
+  localStorage.setItem('salesAppData', JSON.stringify(data));
+}
+
+// データ復元
+function loadAppData() {
+  const data = JSON.parse(localStorage.getItem('salesAppData') || '{}');
+  window.kaikoList = data.kaikoList || [];
+  window.reserveList = data.reserveList || [];
+  window.productList = data.productList || [];
+  window.salesInfo = data.salesInfo || [];
+}
+
+// 初期化時に呼び出し
+loadAppData();
+
+// 例：リスト更新時に保存
+function updateKaikoList(newList) {
+  window.kaikoList = newList;
+  saveAppData();
+  renderKaikoList(); // 画面更新用
+}
