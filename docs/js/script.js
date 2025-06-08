@@ -851,7 +851,7 @@ function renderCheckoutProducts() {
 // 会計確認画面
 // ------------------------------
 // --- 会計確認画面の表示 ---
-function showCheckoutConfirm(onPaidCallback) {
+function showCheckoutConfirm(onPaidCallback = null) {
   // 1. 選択アイテム取得
   const counts = window.checkoutCounts || {};
   const selected = products
@@ -893,7 +893,7 @@ function showCheckoutConfirm(onPaidCallback) {
   // ぴったりボタン
   overlay.querySelector("#btnJust").onclick = () => {
     overlay.querySelector("#payInput").value = total;
-    showChangePopup(total, total, selected);
+    showChangePopup(total, total, selected, onPaidCallback);
   };
 
   // 戻るボタン
@@ -909,13 +909,24 @@ function showCheckoutConfirm(onPaidCallback) {
       alert("金額が未入力、または合計金額より少ないです");
       return;
     }
-    showChangePopup(pay, total, selected);
+    showChangePopup(pay, total, selected, onPaidCallback);
   };
 
-  // お釣り・年齢確認ポップアップ
-  function showChangePopup(pay, total, selectedItems) {
-    const hasR18 = selectedItems.some(p => p.age === "r18");
-    const change = pay - total;
+  
+}
+
+// お釣り・年齢確認ポップアップ
+  function showChangePopup(pay, total, selectedItems, onPaidCallback=null) {
+    let overlay = document.getElementById("checkoutConfirmOverlay");
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.id = "checkoutConfirmOverlay";
+    overlay.className = "overlay";
+    document.body.appendChild(overlay);
+  }
+
+  const hasR18 = selectedItems.some(p => p.age === "r18");
+  const change = pay - total;
 
     // 18歳以上の生年月日（今日基準）
     let ageCheckHtml = "";
@@ -972,7 +983,6 @@ function showCheckoutConfirm(onPaidCallback) {
       if (typeof onPaidCallback === "function") onPaidCallback();
     };
   }
-}
 
 // 電卓パッド描画
 function renderCalcPad() {
