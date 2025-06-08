@@ -849,7 +849,7 @@ function renderCheckoutProducts() {
 // 会計確認画面
 // ------------------------------
 // --- 会計確認画面の表示 ---
-function showCheckoutConfirm() {
+function showCheckoutConfirm(onPaidCallback) {
   // 1. 選択アイテム取得
   const counts = window.checkoutCounts || {};
   const selected = products
@@ -964,9 +964,10 @@ function showCheckoutConfirm() {
     overlay.querySelector(".age-check").innerHTML = ageCheckHtml;
 
     // 新規ボタン
-    document.getElementById("btnKaikeiNew").onclick = () => {
+    overlay.querySelector("#btnKaikeiNew").onclick = () => {
       overlay.classList.add("hidden");
       renderCheckoutProducts();
+      if (typeof onPaidCallback === "function") onPaidCallback();
     };
   }
 }
@@ -1342,7 +1343,13 @@ function showReserveProductPopup(reserve = null, isKaikeiTab = false) {
       if (idx !== -1) window.checkoutCounts[idx] = sel.count;
     });
     reserveProductPopup.classList.add("hidden");
-    showCheckoutConfirm(); // 会計確認画面へ
+    showCheckoutConfirm(() => {
+      if (reserve) {
+        reserve.checked = true;
+        saveReservesToStorage();
+        showReserveList();
+      }
+    });
     return;
   }
 
