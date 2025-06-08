@@ -430,12 +430,6 @@ btnProduct.addEventListener("click", () => {
   renderProductList();
 });
 
-btnAddProduct.addEventListener("click", () => {
-  productListView.classList.add("hidden");
-  productFormView.classList.remove("hidden");
-  resetProductForm();
-});
-
 // 商品登録キャンセル
 btnProductCancel.addEventListener("click", () => {
   productFormView.classList.add("hidden");
@@ -506,9 +500,7 @@ function showProductPopup(product = null, idx = null) {
     <!-- 2行目: 画像＋ラジオボタン群＋金額・在庫 -->
     <div class="popup-row2">
       <div class="popup-img-col">
-        <label for="popupProductImage" class="img-label">
-          <img id="popupProductImgPreview" src="${product && product.imageUrl ? product.imageUrl : "https://placehold.co/120x120?text=No+Image"}" class="popup-img">
-        </label>
+        <img id="popupProductImgPreview" src="${product && product.imageUrl ? product.imageUrl : "https://placehold.co/120x120?text=No+Image"}" class="popup-img">
         <input type="file" id="popupProductImage" accept="image/*" style="display:none;">
       </div>
       <div class="popup-radio-col" style="flex:2;">
@@ -557,6 +549,8 @@ function showProductPopup(product = null, idx = null) {
   // 画像プレビュー
   const popupProductImage = document.getElementById("popupProductImage");
   const popupProductImgPreview = document.getElementById("popupProductImgPreview");
+  popupProductImage.style.display = "none";
+
   popupProductImgPreview.onclick = () => popupProductImage.click();
   popupProductImage.addEventListener("change", () => {
     if (popupProductImage.files && popupProductImage.files[0]) {
