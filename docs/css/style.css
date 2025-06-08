@@ -1050,3 +1050,87 @@ label {
   border: 1px solid #bbb;
   box-sizing: border-box;
 }
+
+
+
+.overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.overlay.hidden { display: none; }
+.sales-table {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px 16px;
+  max-width: 600px;
+  min-width: 320px;
+  margin: 40px auto;
+}
+.sales-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 12px;
+}
+.sales-table th, .sales-table td {
+  padding: 6px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+.sales-table th {
+  background: #eee;
+}
+.sales-total {
+  font-weight: bold;
+  text-align: right;
+  margin-bottom: 12px;
+  color: #1976d2;
+  font-size: 1.1em;
+}
+.sales-back-row {
+  text-align: center;
+}
+#btnSalesInfoBack {
+  padding: 8px 32px;
+  font-size: 1.1em;
+}
+
+.sales-table {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px 16px;
+  max-width: 600px;
+  min-width: 320px;
+  margin: 40px auto;
+}
+.sales-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 12px;
+}
+.sales-table th, .sales-table td {
+  padding: 6px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+.sales-table th {
+  background: #eee;
+}
+.sales-total {
+  font-weight: bold;
+  text-align: right;
+  margin-bottom: 12px;
+  color: #1976d2;
+  font-size: 1.1em;
+}
+.sales-back-row {
+  text-align: center;
+}
+#btnSalesInfoBack {
+  padding: 8px 32px;
+  font-size: 1.1em;
+}

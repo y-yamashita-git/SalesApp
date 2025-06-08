@@ -38,7 +38,7 @@
       <button id="btnKaikei" style="width:100%;margin-bottom:8px;">会計</button>
       <button id="btnProduct" style="width:100%;margin-bottom:8px;">商品登録</button>
       <button style="width:100%;margin-bottom:8px;">取置きリスト</button>
-      <button style="width:100%;">売上情報</button>
+      <button id="btnSalesInfo" style="width:100%;">売上情報</button>
     </div>
     <!-- 商品一覧画面 -->
     <div id="productListView" class="hidden">
@@ -141,6 +141,18 @@
       <button class="checkout-btn">会計</button>
     </div>
   </div>
+
+  <!-- 商品一覧画面などと同じ階層に追加 -->
+<div id="salesInfoView" class="hidden">
+  <div class="sales-table">
+    <h2>売上情報</h2>
+    <div id="salesInfoTable"></div>
+    <div class="sales-total" id="salesInfoTotal"></div>
+    <div class="sales-back-row">
+      <button id="salesInfoBack">↩</button>
+    </div>
+  </div>
+</div>
 
 <!-- 取り置きリスト画面（買い子タブ風レイアウト） -->
 <div class="reserve-list-panel" style="display:none;">

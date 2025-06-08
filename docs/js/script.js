@@ -147,6 +147,7 @@ tabKaiko.addEventListener("click", (e) => {
   sectionUriko.classList.add("hidden");
   urikoButtons.classList.add("hidden");
   reservePanel.style.display = 'none';
+  hideSalesInfoView();
   if (checkoutProductsScroll) checkoutProductsScroll.style.display = '';
   if (checkoutBottomBar) checkoutBottomBar.style.display = '';
 });
@@ -166,6 +167,7 @@ tabUriko.addEventListener("click", (e) => {
   productListView.classList.add("hidden");
   productFormView.classList.add("hidden");
   urikoButtons.classList.remove("hidden");
+  hideSalesInfoView();
   reservePanel.style.display = 'none';
 });
 
@@ -1397,4 +1399,82 @@ function escapeHtml(str) {
     .replace(/'/g, "&#39;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
+}
+
+document.getElementById("btnSalesInfo").onclick = function() {
+  // 他の画面を非表示
+  document.getElementById("sectionUriko").classList.add("hidden");
+  document.getElementById("salesInfoView").classList.remove("hidden");
+
+  // 売上データ取得
+  const sales = JSON.parse(localStorage.getItem("sales") || "[]");
+  // 商品ごとに売れた数を集計
+  const productMap = {};
+  products.forEach((p, idx) => {
+    productMap[p.title] = {
+      seq: idx + 1,
+      title: p.title,
+      originalStock: Number(p.stock) + sales.filter(s => s.title === p.title).reduce((sum, s) => sum + Number(s.count), 0),
+      sold: 0,
+      price: Number(p.price) || 0,
+      currentStock: Number(p.stock)
+    };
+  });
+  sales.forEach(s => {
+    if (productMap[s.title]) {
+      productMap[s.title].sold += Number(s.count);
+    }
+  });
+
+  // 表HTML生成
+  let tableHtml = `
+    <table>
+      <thead>
+        <tr>
+          <th>SEQ</th>
+          <th>商品名</th>
+          <th>元の在庫数</th>
+          <th>売れた数</th>
+          <th>残在庫</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+  let totalAmount = 0;
+  Object.values(productMap).forEach(p => {
+    tableHtml += `
+      <tr>
+        <td>${p.seq}</td>
+        <td>${escapeHtml(p.title)}</td>
+        <td>${p.originalStock}</td>
+        <td>${p.sold}</td>
+        <td>${p.currentStock}</td>
+      </tr>
+    `;
+    totalAmount += p.sold * p.price;
+  });
+  tableHtml += `
+      </tbody>
+    </table>
+  `;
+  document.getElementById("salesInfoTable").innerHTML = tableHtml;
+  document.getElementById("salesInfoTotal").textContent = `合計売上金額：￥${totalAmount.toLocaleString()}`;
+};
+
+// 戻るボタンも同様
+document.getElementById("salesInfoBack").onclick = function() {
+  hideSalesInfoView();
+  // 売り子タブの初期画面（ボタン4つ）を表示
+  document.getElementById("sectionUriko").classList.remove("hidden");
+  document.getElementById("sectionKaiko").classList.add("hidden");
+  if (urikoButtons) urikoButtons.classList.remove("hidden");
+  if (productListView) productListView.classList.add("hidden");
+  if (productFormView) productFormView.classList.add("hidden");
+  if (checkoutPanel) checkoutPanel.style.display = "none";
+};
+
+// 売上情報画面を非表示にする関数
+function hideSalesInfoView() {
+  const salesInfoView = document.getElementById("salesInfoView");
+  if (salesInfoView) salesInfoView.classList.add("hidden");
 }
