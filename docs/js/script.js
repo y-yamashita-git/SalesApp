@@ -75,9 +75,10 @@ const reserveProductGrid = document.getElementById("reserveProductGrid");
 const btnReserveProductCancel = document.getElementById("btnReserveProductCancel");
 const btnReserveProductOk = document.getElementById("btnReserveProductOk");
 
-// --- 画像のBase64データ ---
+// --- 画像のデータ ---
 const smileImgBase64 = "img/smile.png";
 const sadImgBase64 = "img/sad.png";
+const noProductsImgBase64 = "img/noProducts.png";
 
 
 let items = []; // 買い物リスト全件
@@ -842,6 +843,20 @@ btnAddProduct.addEventListener("click", () => {
 // 商品画像クリックで編集ポップアップ
 function renderProductList() {
   productList.innerHTML = "";
+
+  // 商品が1つもない場合のみ noProducts.png を表示
+  if (!products || products.length === 0) {
+    const noProductsImg = document.createElement("img");
+    noProductsImg.src = noProductsImgBase64;
+    noProductsImg.alt = "商品がありません";
+    noProductsImg.style.display = "block";
+    noProductsImg.style.margin = "32px auto";
+    noProductsImg.style.maxWidth = "200px";
+    productList.appendChild(noProductsImg);
+    return;
+  }
+
+
   products.forEach((p, idx) => {
     const card = document.createElement("div");
     card.className = "product-card";
@@ -979,6 +994,30 @@ function renderCheckoutProducts() {
   const grid = document.querySelector('.checkout-products-grid');
   if (!grid) return;
   grid.innerHTML = ""; // 一度クリア
+
+  // 商品が1つもない場合のみ noProducts.png を表示
+  if (!products || products.length === 0) {
+    const noProductsImg = document.createElement("img");
+    noProductsImg.src = noProductsImgBase64;
+    noProductsImg.alt = "商品がありません";
+    noProductsImg.style.display = "block";
+    noProductsImg.style.margin = "32px auto";
+    noProductsImg.style.maxWidth = "200px";
+    grid.appendChild(noProductsImg);
+
+    // 会計ボタン非活性
+    if (checkoutBtn) {
+      checkoutBtn.disabled = true;
+      checkoutBtn.classList.add("disabled");
+    }
+    return;
+  }
+
+  // 商品がある場合は「会計」ボタンを活性化
+  if (checkoutBtn) {
+    checkoutBtn.disabled = false;
+    checkoutBtn.classList.remove("disabled");
+  }
 
   // 選択数を保持する（セッション中のみ）
   if (!window.checkoutCounts) window.checkoutCounts = {};

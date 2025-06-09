@@ -665,12 +665,21 @@ label {
   transition: background 0.2s;
 }
 .back-btn {
-  background: #bdbdbd;
+  background: #1976d2;
   color: #fff;
 }
 .checkout-btn {
   background: #1976d2;
   color: #fff;
+}
+
+.btn.disabled,
+button:disabled,
+input[type="button"]:disabled {
+  background: #dbdbdb !important;
+  color: #888 !important;
+  cursor: not-allowed !important;
+  border: none !important;
 }
 
 /* 会計画面の商品グリッド：列数は画面幅に応じて自動 */
