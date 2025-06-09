@@ -52,7 +52,7 @@ td {
 }
 
 th {
-  background: #e3f2fd;
+  background: #fde3fa;
   font-weight: bold;
 }
 
@@ -982,7 +982,7 @@ input[type="button"]:disabled {
   gap: 12px;
   font-weight: bold;
   padding: 4px 8px;
-  background: #e3e3e3;
+  background: #d6efff;
 }
 
 .reserve-list-header-name {
@@ -1178,32 +1178,6 @@ input[type="button"]:disabled {
   display: none;
 }
 
-.sales-table {
-  background: #fff;
-  border-radius: 12px;
-  padding: 24px 16px;
-  max-width: 600px;
-  min-width: 320px;
-  margin: 40px auto;
-}
-
-.sales-table table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 12px;
-}
-
-.sales-table th,
-.sales-table td {
-  padding: 6px;
-  border: 1px solid #ccc;
-  text-align: center;
-}
-
-.sales-table th {
-  background: #eee;
-}
-
 .sales-total {
   font-weight: bold;
   text-align: right;
@@ -1244,7 +1218,7 @@ input[type="button"]:disabled {
 }
 
 .sales-table th {
-  background: #eee;
+  background: #d6efff;
 }
 
 .sales-total {
@@ -1293,4 +1267,9 @@ select {
   flex: 1 1 0;
   min-width: 0;
   margin: 0;
+}
+
+.tab.kaiko.active {
+  background: #f8bbd0 !important; /* ピンク */
+  color: #ad1457 !important;
 }
