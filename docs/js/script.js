@@ -1761,7 +1761,6 @@ document.getElementById("btnSalesInfo").onclick = function () {
     productMap[p.title] = {
       seq: idx + 1,
       title: p.title,
-      originalStock: Number(p.originalStock !== undefined ? p.originalStock : p.stock), // 修正
       sold: 0,
       price: Number(p.price) || 0,
       currentStock: Number(p.stock)
