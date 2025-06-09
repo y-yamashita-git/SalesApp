@@ -1273,3 +1273,26 @@ select {
   background: #f8bbd0 !important; /* ピンク */
   color: #ad1457 !important;
 }
+
+.reserve-list-panel,
+.reserve-list-header,
+.reserve-list-grid,
+.reserve-list-item,
+.reserve-list-btn-row {
+  width: 90vw !important;
+  max-width: 900px;
+  min-width: 0;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+.reserve-list-item {
+  width: 100% !important;
+  max-width: 900px;
+  min-width: 0;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
