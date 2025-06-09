@@ -1647,6 +1647,22 @@ function showReserveProductPopup(reserve = null, isKaikeiTab = false) {
         const idx = products.findIndex(p => p.title === sel.product);
         if (idx !== -1) window.checkoutCounts[idx] = sel.count;
       });
+
+      // ★ここで自分のreserve.itemsのcountを現在の押下数(selectedProducts)で上書き
+      if (reserve && reserve.items) {
+        reserve.items.forEach(item => {
+          const found = selectedProducts.find(sel => sel.product === item.product);
+          item.count = found ? found.count : 0;
+        });
+        // 新たに選択された商品がreserve.itemsに無い場合は追加
+        selectedProducts.forEach(sel => {
+          if (!reserve.items.find(item => item.product === sel.product)) {
+            reserve.items.push({ product: sel.product, count: sel.count });
+          }
+        });
+        saveReservesToStorage();
+      }
+
       reserveProductPopup.classList.add("hidden");
       showCheckoutConfirm(() => {
         if (reserve) {
