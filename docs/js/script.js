@@ -648,6 +648,18 @@ btnProductRegister.addEventListener("click", () => {
 });
 
 function saveProduct(product) {
+  const idx = products.findIndex(p => p.title === product.title);
+  if (idx !== -1) {
+    // 編集時：originalStockを維持
+    product.originalStock = products[idx].originalStock !== undefined
+      ? products[idx].originalStock
+      : Number(product.stock) || 0;
+    products[idx] = product;
+  } else {
+    // 新規登録時：originalStockをstockで初期化
+    product.originalStock = Number(product.stock) || 0;
+    products.push(product);
+  }
   products.push(product);
   localStorage.setItem("urikoProducts", JSON.stringify(products));
   renderProductList();
@@ -1290,33 +1302,61 @@ function showReserveList(list = reserves, options = {}) {
       el.onclick = () => showReserveProductPopup(sorted[idx], isKaikeiTab);
     });
     // チェックボックス変更時に保存＆再描画
-    grid.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    grid.querySelectorAll('input[type="checkbox"]').forEach((cb, sortedIdx) => {
       cb.onchange = (e) => {
-        const idx = Number(cb.dataset.idx);
+        // sortedIdxから本来のreservesインデックスを取得
+        const reserve = sorted[sortedIdx];
+        const idx = reserves.indexOf(reserve);
+        if (idx === -1) return;
+
         reserves[idx].checked = cb.checked;
         saveReservesToStorage();
-        showReserveList();
+
+        // 売上情報
+        let sales = JSON.parse(localStorage.getItem("sales") || "[]");
 
         // チェックが付いた時だけ在庫を減らす
         if (cb.checked) {
           reserves[idx].items.forEach(item => {
             const prod = products.find(p => p.title === item.product);
-            if (prod && typeof prod.stock === "number") {
+            if (prod) {
+              prod.stock = Number(prod.stock);
               prod.stock = Math.max(0, prod.stock - item.count);
+            }
+            // 売上情報に追加
+            if (item.count > 0) {
+              sales.push({
+                title: item.product,
+                price: prod ? prod.price : 0,
+                count: item.count,
+                date: new Date().toISOString()
+              });
             }
           });
           localStorage.setItem("urikoProducts", JSON.stringify(products));
+          localStorage.setItem("sales", JSON.stringify(sales));
         }
         // チェックが外れた時は在庫数を元に戻す
         else {
           reserves[idx].items.forEach(item => {
             const prod = products.find(p => p.title === item.product);
-            if (prod && typeof prod.stock === "number") {
-              prod.stock = Number(prod.stock) + item.count;
+            if (prod) {
+              prod.stock = Number(prod.stock);
+              prod.stock = prod.stock + item.count;
+            }
+            // 売上情報から該当分を減算（商品名・個数一致の最初の1件を削除）
+            for (let i = 0; i < sales.length; i++) {
+              if (sales[i].title === item.product && Number(sales[i].count) === Number(item.count)) {
+                sales.splice(i, 1);
+                break;
+              }
             }
           });
           localStorage.setItem("urikoProducts", JSON.stringify(products));
+          localStorage.setItem("sales", JSON.stringify(sales));
         }
+
+        showReserveList();
       };
     });
 
@@ -1721,7 +1761,7 @@ document.getElementById("btnSalesInfo").onclick = function () {
     productMap[p.title] = {
       seq: idx + 1,
       title: p.title,
-      originalStock: Number(p.stock) + sales.filter(s => s.title === p.title).reduce((sum, s) => sum + Number(s.count), 0),
+      originalStock: Number(p.originalStock !== undefined ? p.originalStock : p.stock), // 修正
       sold: 0,
       price: Number(p.price) || 0,
       currentStock: Number(p.stock)

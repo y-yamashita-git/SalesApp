@@ -1296,3 +1296,22 @@ select {
   box-sizing: border-box;
   overflow-x: hidden;
 }
+
+/* チェックボックスのdisabled時も通常色で表示（Webkit/Chrome/Safari向け） */
+.reserve-list-item input[type="checkbox"]:disabled {
+  filter: none !important;
+  opacity: 1 !important;
+  background: none !important;
+  -webkit-filter: none !important;
+  pointer-events: none;
+}
+
+/* Firefox向け: チェックボックスの不透明度を上書き */
+.reserve-list-item input[type="checkbox"]:disabled::-moz-checkbox {
+  opacity: 1 !important;
+}
+
+/* チェックボックスの枠線や色を強制的に指定（必要に応じて） */
+.reserve-list-item input[type="checkbox"] {
+  accent-color: #1976d2;
+}
