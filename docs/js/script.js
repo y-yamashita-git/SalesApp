@@ -1277,7 +1277,7 @@ function showReserveList(list = reserves, options = {}) {
   const grid = panel.querySelector('.reserve-list-grid');
   if (grid) {
     grid.innerHTML = sorted.map((r, i) => `
-    <div class="reserve-list-item" style="display:flex;align-items:center;gap:12px;max-width:480px;margin:0 auto;width:100%;${r.checked ? 'background:#ccc;' : ''}">
+    <div class="reserve-list-item" style="display:flex;align-items:center;gap:12px;${r.checked ? 'background:#ccc;' : ''}">
       <span class="reserve-list-name" style="font-weight:bold;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;">
         ${escapeHtml(r.name)}
       </span>
