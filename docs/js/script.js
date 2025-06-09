@@ -89,7 +89,7 @@ let items = []; // 買い物リスト全件
 window.addEventListener("load", () => {
   // 初回タブであればデータをクリア
   if (!sessionStorage.getItem("tabInitialized")) {
-    localStorage.removeItem("kaikoItems"); 
+    localStorage.removeItem("kaikoItems");
     localStorage.removeItem("urikoProducts");
     localStorage.removeItem("reserveItems");
     sessionStorage.setItem("tabInitialized", "true");
@@ -271,14 +271,14 @@ function renderList() {
     const tr = document.createElement("tr");
 
     // 空白以外を選択した場合は行全体を灰色に
-  if (item.status !== "") {
-    tr.style.background = "#bababa";
-  } 
-  else if (item.isReserved) {
-    tr.style.background = "#ffee89";
-  } else {
-    tr.style.background = "";
-  }
+    if (item.status !== "") {
+      tr.style.background = "#bababa";
+    }
+    else if (item.isReserved) {
+      tr.style.background = "#ffee89";
+    } else {
+      tr.style.background = "";
+    }
 
     // 取置★マークのセル
     const reservedTd = document.createElement("td");
@@ -295,102 +295,102 @@ function renderList() {
 
     // 状態セル（カスタムドロップダウン）
     const statusTd = document.createElement("td");
-const dropdown = document.createElement("div");
-dropdown.className = "custom-dropdown";
-dropdown.tabIndex = 0; // キーボード操作用
-// ▼マークと画像を含めた枠線を描画
-dropdown.style.minWidth = "60px";
-dropdown.style.minHeight = "44px";
-dropdown.style.border = "1.5px solid #bbb";
-dropdown.style.borderRadius = "8px";
-dropdown.style.display = "inline-block";
-dropdown.style.position = "relative";
-dropdown.style.boxSizing = "border-box";
-dropdown.style.padding = "0"; // 余白をなくす
+    const dropdown = document.createElement("div");
+    dropdown.className = "custom-dropdown";
+    dropdown.tabIndex = 0; // キーボード操作用
+    // ▼マークと画像を含めた枠線を描画
+    dropdown.style.minWidth = "60px";
+    dropdown.style.minHeight = "44px";
+    dropdown.style.border = "1.5px solid #bbb";
+    dropdown.style.borderRadius = "8px";
+    dropdown.style.display = "inline-block";
+    dropdown.style.position = "relative";
+    dropdown.style.boxSizing = "border-box";
+    dropdown.style.padding = "0"; // 余白をなくす
 
-// 選択中
-const selected = document.createElement("div");
-selected.className = "selected";
-selected.style.minHeight = "44px";
-selected.style.minWidth = "60px";
-selected.style.display = "flex";
-selected.style.alignItems = "center";
-selected.style.justifyContent = "center";
-selected.style.position = "relative";
-selected.style.background = "transparent";
+    // 選択中
+    const selected = document.createElement("div");
+    selected.className = "selected";
+    selected.style.minHeight = "44px";
+    selected.style.minWidth = "60px";
+    selected.style.display = "flex";
+    selected.style.alignItems = "center";
+    selected.style.justifyContent = "center";
+    selected.style.position = "relative";
+    selected.style.background = "transparent";
 
-// ▼マーク（CSSで描画）
-const arrow = document.createElement("span");
-arrow.style.position = "absolute";
-arrow.style.right = "0px";
-arrow.style.top = "50%";
-arrow.style.transform = "translateY(-50%)";
-arrow.style.pointerEvents = "none";
-arrow.style.fontSize = "20px";
-arrow.textContent = "▼";
-selected.appendChild(arrow);
-selected.style.justifyContent = "flex-start";
-selected.style.paddingRight = "0px"; 
+    // ▼マーク（CSSで描画）
+    const arrow = document.createElement("span");
+    arrow.style.position = "absolute";
+    arrow.style.right = "0px";
+    arrow.style.top = "50%";
+    arrow.style.transform = "translateY(-50%)";
+    arrow.style.pointerEvents = "none";
+    arrow.style.fontSize = "20px";
+    arrow.textContent = "▼";
+    selected.appendChild(arrow);
+    selected.style.justifyContent = "flex-start";
+    selected.style.paddingRight = "0px";
 
-const selectedImg = document.createElement("img");
-selectedImg.style.width = "36px";
-selectedImg.style.height = "36px";
-selectedImg.style.verticalAlign = "middle";
-if (item.status === "smile") {
-  selectedImg.src = "img/smile.png";
-  selectedImg.alt = "smile";
-  selectedImg.style.visibility = "visible";
-} else if (item.status === "sad") {
-  selectedImg.src = "img/sad.png";
-  selectedImg.alt = "sad";
-  selectedImg.style.visibility = "visible";
-} else {
-  selectedImg.src = "";
-  selectedImg.alt = "";
-  selectedImg.style.visibility = "hidden";
-}
-selected.appendChild(selectedImg);
+    const selectedImg = document.createElement("img");
+    selectedImg.style.width = "36px";
+    selectedImg.style.height = "36px";
+    selectedImg.style.verticalAlign = "middle";
+    if (item.status === "smile") {
+      selectedImg.src = "img/smile.png";
+      selectedImg.alt = "smile";
+      selectedImg.style.visibility = "visible";
+    } else if (item.status === "sad") {
+      selectedImg.src = "img/sad.png";
+      selectedImg.alt = "sad";
+      selectedImg.style.visibility = "visible";
+    } else {
+      selectedImg.src = "";
+      selectedImg.alt = "";
+      selectedImg.style.visibility = "hidden";
+    }
+    selected.appendChild(selectedImg);
 
     // ドロップダウンリスト
     const dropdownList = document.createElement("div");
-dropdownList.className = "dropdown-list hidden";
-dropdownList.style.minWidth = "60px";
-dropdownList.style.minHeight = "44px";
+    dropdownList.className = "dropdown-list hidden";
+    dropdownList.style.minWidth = "60px";
+    dropdownList.style.minHeight = "44px";
 
 
 
-[
-  { value: "", img: "" },
-  { value: "smile", img: "img/smile.png" },
-  { value: "sad", img: "img/sad.png" }
-].forEach(opt => {
-  const itemDiv = document.createElement("div");
-  itemDiv.className = "dropdown-item";
-  itemDiv.style.minHeight = "44px";
-  itemDiv.style.minWidth = "60px";
-  if (opt.img) {
-    const img = document.createElement("img");
-    img.src = opt.img;
-    img.style.width = "36px";
-    img.style.height = "36px";
-    itemDiv.appendChild(img);
-  } else {
-    // 空白（何も表示しない）
-    const span = document.createElement("span");
-    span.style.display = "inline-block";
-    span.style.width = "36px";
-    span.style.height = "36px";
-    itemDiv.appendChild(span);
-  }
-  dropdownList.appendChild(itemDiv);
+    [
+      { value: "", img: "" },
+      { value: "smile", img: "img/smile.png" },
+      { value: "sad", img: "img/sad.png" }
+    ].forEach(opt => {
+      const itemDiv = document.createElement("div");
+      itemDiv.className = "dropdown-item";
+      itemDiv.style.minHeight = "44px";
+      itemDiv.style.minWidth = "60px";
+      if (opt.img) {
+        const img = document.createElement("img");
+        img.src = opt.img;
+        img.style.width = "36px";
+        img.style.height = "36px";
+        itemDiv.appendChild(img);
+      } else {
+        // 空白（何も表示しない）
+        const span = document.createElement("span");
+        span.style.display = "inline-block";
+        span.style.width = "36px";
+        span.style.height = "36px";
+        itemDiv.appendChild(span);
+      }
+      dropdownList.appendChild(itemDiv);
 
-  // クリック時
-  itemDiv.onclick = () => {
-    item.status = opt.value;
-    saveToStorage();
-    renderList();
-  };
-});
+      // クリック時
+      itemDiv.onclick = () => {
+        item.status = opt.value;
+        saveToStorage();
+        renderList();
+      };
+    });
     // ドロップダウン開閉
     selected.onclick = (e) => {
       dropdownList.classList.toggle("hidden");
@@ -412,17 +412,17 @@ dropdownList.style.minHeight = "44px";
     tr.appendChild(statusTd);
 
     listBody.appendChild(tr);
-    
+
     // 「状態」プルダウン押下時はポップアップ表示しない
     tr.addEventListener("click", (e) => {
       if (
-    e.target.closest(".custom-dropdown") || // カスタムドロップダウン全体
-    e.target.classList.contains("dropdown-item") // ドロップダウンリストのアイテム
-  ) {
-    return;
-  }
-  showPopup(item);
-});
+        e.target.closest(".custom-dropdown") || // カスタムドロップダウン全体
+        e.target.classList.contains("dropdown-item") // ドロップダウンリストのアイテム
+      ) {
+        return;
+      }
+      showPopup(item);
+    });
 
     listBody.appendChild(tr);
   });
@@ -635,7 +635,7 @@ btnProductRegister.addEventListener("click", () => {
 
   if (productImage.files && productImage.files[0]) {
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function (e) {
       imageUrl = e.target.result;
       saveProduct({ title, type, r18, price, memo, imageUrl });
     };
@@ -743,7 +743,7 @@ function showProductPopup(product = null, idx = null) {
   popupProductImage.addEventListener("change", () => {
     if (popupProductImage.files && popupProductImage.files[0]) {
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         popupProductImgPreview.src = e.target.result;
       };
       reader.readAsDataURL(popupProductImage.files[0]);
@@ -774,7 +774,7 @@ function showProductPopup(product = null, idx = null) {
 
     if (imageFileSelected) {
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         imageUrl = e.target.result;
         saveAndClose(true);
       };
@@ -870,7 +870,7 @@ function renderProductList() {
     img.src = p.imageUrl || "https://placehold.co/120x120?text=No+Image";
     img.style.cursor = "pointer";
     img.addEventListener("click", () => {
-      showProductPopup(p, idx); 
+      showProductPopup(p, idx);
     });
     imgWrap.appendChild(img);
 
@@ -938,7 +938,7 @@ btnProductBack.addEventListener("click", () => {
 
 // HTMLエスケープ
 function escapeHtml(str) {
-  return str.replace(/[&<>"']/g, function(m) {
+  return str.replace(/[&<>"']/g, function (m) {
     return ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
     })[m];
@@ -1143,12 +1143,12 @@ function showCheckoutConfirm(onPaidCallback = null) {
     showChangePopup(pay, total, selected, onPaidCallback);
   };
 
-  
+
 }
 
 // お釣り・年齢確認ポップアップ
-  function showChangePopup(pay, total, selectedItems, onPaidCallback=null) {
-    let overlay = document.getElementById("checkoutConfirmOverlay");
+function showChangePopup(pay, total, selectedItems, onPaidCallback = null) {
+  let overlay = document.getElementById("checkoutConfirmOverlay");
   if (!overlay) {
     overlay = document.createElement("div");
     overlay.id = "checkoutConfirmOverlay";
@@ -1159,71 +1159,71 @@ function showCheckoutConfirm(onPaidCallback = null) {
   const hasR18 = selectedItems.some(p => p.age === "r18");
   const change = pay - total;
 
-    // 18歳以上の生年月日（今日基準）
-    let ageCheckHtml = "";
-    if (hasR18) {
-      const now = new Date();
-      const y = now.getFullYear() - 18;
-      const m = now.getMonth() + 1;
-      const d = now.getDate();
-      let wareki = "";
-      if (y >= 2019) {
-        wareki = `令和${y - 2018}年${m}月${d}日以前`;
-      } else if (y >= 1989) {
-        wareki = `平成${y - 1988}年${m}月${d}日以前`;
-      } else {
-        wareki = `昭和${y - 1925}年${m}月${d}日以前`;
-      }
-      ageCheckHtml = `
+  // 18歳以上の生年月日（今日基準）
+  let ageCheckHtml = "";
+  if (hasR18) {
+    const now = new Date();
+    const y = now.getFullYear() - 18;
+    const m = now.getMonth() + 1;
+    const d = now.getDate();
+    let wareki = "";
+    if (y >= 2019) {
+      wareki = `令和${y - 2018}年${m}月${d}日以前`;
+    } else if (y >= 1989) {
+      wareki = `平成${y - 1988}年${m}月${d}日以前`;
+    } else {
+      wareki = `昭和${y - 1925}年${m}月${d}日以前`;
+    }
+    ageCheckHtml = `
         <div class="age-check-alert">※年齢確認を忘れずに！</div>
         <div class="age-check-date">${y}年${m}月${d}日（${wareki}）生まれ以前が18歳以上です</div>
       `;
-    }
-
-    // 売上記録
-    let sales = JSON.parse(localStorage.getItem("sales") || "[]");
-    selectedItems.forEach(item => {
-      sales.push({
-        title: item.title,
-        price: item.price,
-        count: item.count,
-        date: new Date().toISOString()
-      });
-      // 在庫を減らす
-      if (typeof item.idx === "number" && products[item.idx]) {
-        products[item.idx].stock = String((Number(products[item.idx].stock) || 0) - item.count);
-      }
-    });
-    localStorage.setItem("sales", JSON.stringify(sales));
-    localStorage.setItem("urikoProducts", JSON.stringify(products));
-
-    // 押下数クリア
-    window.checkoutCounts = {};
-
-    // ポップアップ内容
-    overlay.innerHTML = "";
-    const changeTemplate = document.getElementById("change-popup-template");
-    overlay.appendChild(document.importNode(changeTemplate.content, true));
-    overlay.querySelector(".change-message").innerHTML = `お釣りは${change}円です`;
-    overlay.querySelector(".age-check").innerHTML = ageCheckHtml;
-
-    // 新規ボタン
-    overlay.querySelector("#btnKaikeiNew").onclick = () => {
-      overlay.classList.add("hidden");
-      renderCheckoutProducts();
-      if (typeof onPaidCallback === "function") onPaidCallback();
-    };
   }
+
+  // 売上記録
+  let sales = JSON.parse(localStorage.getItem("sales") || "[]");
+  selectedItems.forEach(item => {
+    sales.push({
+      title: item.title,
+      price: item.price,
+      count: item.count,
+      date: new Date().toISOString()
+    });
+    // 在庫を減らす
+    if (typeof item.idx === "number" && products[item.idx]) {
+      products[item.idx].stock = String((Number(products[item.idx].stock) || 0) - item.count);
+    }
+  });
+  localStorage.setItem("sales", JSON.stringify(sales));
+  localStorage.setItem("urikoProducts", JSON.stringify(products));
+
+  // 押下数クリア
+  window.checkoutCounts = {};
+
+  // ポップアップ内容
+  overlay.innerHTML = "";
+  const changeTemplate = document.getElementById("change-popup-template");
+  overlay.appendChild(document.importNode(changeTemplate.content, true));
+  overlay.querySelector(".change-message").innerHTML = `お釣りは${change}円です`;
+  overlay.querySelector(".age-check").innerHTML = ageCheckHtml;
+
+  // 新規ボタン
+  overlay.querySelector("#btnKaikeiNew").onclick = () => {
+    overlay.classList.add("hidden");
+    renderCheckoutProducts();
+    if (typeof onPaidCallback === "function") onPaidCallback();
+  };
+}
 
 // 電卓パッド描画
 function renderCalcPad() {
   const pad = document.getElementById("checkoutCalcPad");
   if (!pad) return;
   const keys = [
-    ["7","8","9"],
-    ["4","5","6"],
-    ["1","2","3"],
-    ["0","00","C"]
+    ["7", "8", "9"],
+    ["4", "5", "6"],
+    ["1", "2", "3"],
+    ["0", "00", "C"]
   ];
   pad.innerHTML = keys.map(row =>
     `<div class="calc-row">${row.map(k =>
@@ -1282,10 +1282,10 @@ function showReserveList(list = reserves, options = {}) {
     </div>
   `).join("");
 
-  grid.querySelectorAll('.reserve-list-name').forEach((el, idx) => {
-  const isKaikeiTab = (checkoutPanel && checkoutPanel.style.display !== "none" && reserveTab.classList.contains('active'));
-  el.onclick = () => showReserveProductPopup(sorted[idx], isKaikeiTab);
-});
+    grid.querySelectorAll('.reserve-list-name').forEach((el, idx) => {
+      const isKaikeiTab = (checkoutPanel && checkoutPanel.style.display !== "none" && reserveTab.classList.contains('active'));
+      el.onclick = () => showReserveProductPopup(sorted[idx], isKaikeiTab);
+    });
     // チェックボックス変更時に保存＆再描画
     grid.querySelectorAll('input[type="checkbox"]').forEach(cb => {
       cb.onchange = (e) => {
@@ -1293,30 +1293,30 @@ function showReserveList(list = reserves, options = {}) {
         reserves[idx].checked = cb.checked;
         saveReservesToStorage();
         showReserveList();
-    
-    // チェックが付いた時だけ在庫を減らす
-    if (cb.checked) {
-      reserves[idx].items.forEach(item => {
-        const prod = products.find(p => p.title === item.product);
-        if (prod && typeof prod.stock === "number") {
-          prod.stock = Math.max(0, prod.stock - item.count);
+
+        // チェックが付いた時だけ在庫を減らす
+        if (cb.checked) {
+          reserves[idx].items.forEach(item => {
+            const prod = products.find(p => p.title === item.product);
+            if (prod && typeof prod.stock === "number") {
+              prod.stock = Math.max(0, prod.stock - item.count);
+            }
+          });
+          localStorage.setItem("urikoProducts", JSON.stringify(products));
         }
-      });
-      localStorage.setItem("urikoProducts", JSON.stringify(products));
-    }
-    // チェックが外れた時は在庫数を元に戻す
-    else {
-      reserves[idx].items.forEach(item => {
-        const prod = products.find(p => p.title === item.product);
-        if (prod && typeof prod.stock === "number") {
-          prod.stock = Number(prod.stock) + item.count;
+        // チェックが外れた時は在庫数を元に戻す
+        else {
+          reserves[idx].items.forEach(item => {
+            const prod = products.find(p => p.title === item.product);
+            if (prod && typeof prod.stock === "number") {
+              prod.stock = Number(prod.stock) + item.count;
+            }
+          });
+          localStorage.setItem("urikoProducts", JSON.stringify(products));
         }
-      });
-      localStorage.setItem("urikoProducts", JSON.stringify(products));
-    }
       };
     });
-    
+
   }
 
   // メッセージ欄の表示/非表示
@@ -1461,6 +1461,7 @@ function showReserveProductPopup(reserve = null, isKaikeiTab = false) {
   const nameInput = document.getElementById("reservePersonName");
   const btnDelete = document.getElementById("btnReserveProductDelete");
   const btnOk = document.getElementById("btnReserveProductOk");
+  const reserveProductGrid = document.querySelector(".reserve-product-grid");
 
   // 名前を反映
   nameInput.value = reserve && reserve.name ? reserve.name : "";
@@ -1492,9 +1493,33 @@ function showReserveProductPopup(reserve = null, isKaikeiTab = false) {
       if (idx !== -1) counts[idx] = item.count;
     });
   }
+  // 商品がない場合の活性制御、画像を表示
+  if (!products || products.length === 0) {
+    // OKボタンは活性、会計ボタンの場合は非活性
+    if (btnOk.textContent === "会計") {
+      btnOk.disabled = true;
+      btnOk.classList.add("disabled");
+    } else {
+      btnOk.disabled = false;
+      btnOk.classList.remove("disabled");
+    }
+    if (reserve) {
+      btnDelete.disabled = false;
+      btnDelete.classList.remove("disabled");
+    } else {
+      btnDelete.disabled = true;
+      btnDelete.classList.add("disabled");
+    }
 
-  // 商品リストをグリッドで表示
-  reserveProductGrid.innerHTML = products.map((p, idx) => `
+    // 名前の下に画像を表示
+    reserveProductGrid.innerHTML = `
+      <div style="width:100%;text-align:center;margin:24px 0;">
+        <img src="img/noProducts.png" alt="商品がありません" style="display:block;margin:0 auto;max-width:200px;">
+      </div>
+    `;
+  } else {
+    // 商品リストをグリッドで表示
+    reserveProductGrid.innerHTML = products.map((p, idx) => `
   <div class="reserve-product-card" data-idx="${idx}">
     <div class="reserve-product-img-wrap">
       <img src="${p.imageUrl || "https://placehold.co/120x120?text=No+Image"}" alt="${escapeHtml(p.title)}">
@@ -1507,6 +1532,7 @@ function showReserveProductPopup(reserve = null, isKaikeiTab = false) {
     </div>
   </div>
 `).join("");
+  }
   // カウント操作
   reserveProductGrid.querySelectorAll(".reserve-product-card").forEach(card => {
     const idx = Number(card.dataset.idx);
@@ -1517,52 +1543,52 @@ function showReserveProductPopup(reserve = null, isKaikeiTab = false) {
     if (counts[idx] === undefined) counts[idx] = 0;
 
     // 既存の取り置き合計数（自分自身を除く）
-  let reservedCount = 0;
-  reserves.forEach(r => {
-    if (!reserve || r !== reserve) {
-      const item = r.items && r.items.find(it => it.product === products[idx].title);
-      if (item) reservedCount += item.count;
-    }
-  });
-  // 在庫数
-  const stock = Number(products[idx].stock) || 0;
-  // 押下上限
-  const maxCount = stock - reservedCount;
+    let reservedCount = 0;
+    reserves.forEach(r => {
+      if (!reserve || r !== reserve) {
+        const item = r.items && r.items.find(it => it.product === products[idx].title);
+        if (item) reservedCount += item.count;
+      }
+    });
+    // 在庫数
+    const stock = Number(products[idx].stock) || 0;
+    // 押下上限
+    const maxCount = stock - reservedCount;
 
-  // 画像クリックでカウント＋
-  img.onclick = () => {
-    if (maxCount >= 0 && counts[idx] >= maxCount) {
-      alert("在庫数に達しています");
-      return;
-    }
-    counts[idx]++;
-    updateDisplay();
-  };
-
-  // マイナスボタン
-  minusBtn.onclick = (e) => {
-    e.stopPropagation();
-    if (counts[idx] > 0) {
-      counts[idx]--;
+    // 画像クリックでカウント＋
+    img.onclick = () => {
+      if (maxCount >= 0 && counts[idx] >= maxCount) {
+        alert("在庫数に達しています");
+        return;
+      }
+      counts[idx]++;
       updateDisplay();
-    }
-  };
+    };
 
-  function updateDisplay() {
-    if (counts[idx] > 0) {
-      countBadge.textContent = counts[idx];
-      countBadge.style.display = "flex";
-      minusBtn.style.display = "flex";
-      card.classList.add("selected");
-    } else {
-      countBadge.textContent = "";
-      countBadge.style.display = "none";
-      minusBtn.style.display = "none";
-      card.classList.remove("selected");
+    // マイナスボタン
+    minusBtn.onclick = (e) => {
+      e.stopPropagation();
+      if (counts[idx] > 0) {
+        counts[idx]--;
+        updateDisplay();
+      }
+    };
+
+    function updateDisplay() {
+      if (counts[idx] > 0) {
+        countBadge.textContent = counts[idx];
+        countBadge.style.display = "flex";
+        minusBtn.style.display = "flex";
+        card.classList.add("selected");
+      } else {
+        countBadge.textContent = "";
+        countBadge.style.display = "none";
+        minusBtn.style.display = "none";
+        card.classList.remove("selected");
+      }
     }
-  }
-  // 初期表示
-  updateDisplay();
+    // 初期表示
+    updateDisplay();
   });
 
   // ポップアップ表示
@@ -1575,20 +1601,20 @@ function showReserveProductPopup(reserve = null, isKaikeiTab = false) {
 
   // 取消
   btnReserveProductDelete.onclick = () => {
-  // 既存レコードがある場合は削除確認
-  if (reserve) {
-    if (confirm("この取り置きを削除しますか？")) {
-      // reserves配列から該当レコードを削除
-      const idx = reserves.indexOf(reserve);
-      if (idx !== -1) {
-        reserves.splice(idx, 1);
-        saveReservesToStorage();
-        showReserveList();
+    // 既存レコードがある場合は削除確認
+    if (reserve) {
+      if (confirm("この取り置きを削除しますか？")) {
+        // reserves配列から該当レコードを削除
+        const idx = reserves.indexOf(reserve);
+        if (idx !== -1) {
+          reserves.splice(idx, 1);
+          saveReservesToStorage();
+          showReserveList();
+        }
       }
     }
-  }
-  reserveProductPopup.classList.add("hidden");
-};
+    reserveProductPopup.classList.add("hidden");
+  };
 
   // OKボタン押下時
   btnReserveProductOk.onclick = () => {
@@ -1608,48 +1634,49 @@ function showReserveProductPopup(reserve = null, isKaikeiTab = false) {
         });
       }
     });
-    if (selectedProducts.length === 0) {
+    // 商品が1つもない場合は商品選択チェックをスキップ
+    if ((products && products.length > 0) && selectedProducts.length === 0) {
       alert("商品を1つ以上選択してください");
       return;
     }
 
     // 「会計」ボタンの場合は会計確認画面へ遷移
-  if (btnReserveProductOk.textContent === "会計") {
-    window.checkoutCounts = {};
-    selectedProducts.forEach(sel => {
-      const idx = products.findIndex(p => p.title === sel.product);
-      if (idx !== -1) window.checkoutCounts[idx] = sel.count;
-    });
-    reserveProductPopup.classList.add("hidden");
-    showCheckoutConfirm(() => {
-      if (reserve) {
-        reserve.checked = true;
-        saveReservesToStorage();
-        showReserveList();
-      }
-    });
-    return;
-  }
+    if (btnReserveProductOk.textContent === "会計") {
+      window.checkoutCounts = {};
+      selectedProducts.forEach(sel => {
+        const idx = products.findIndex(p => p.title === sel.product);
+        if (idx !== -1) window.checkoutCounts[idx] = sel.count;
+      });
+      reserveProductPopup.classList.add("hidden");
+      showCheckoutConfirm(() => {
+        if (reserve) {
+          reserve.checked = true;
+          saveReservesToStorage();
+          showReserveList();
+        }
+      });
+      return;
+    }
 
     // 編集時は上書き、新規時のみ追加
-  if (reserve) {
-    // 既存リストの内容を上書き
-    reserve.name = personName;
-    reserve.items = selectedProducts;
-    saveReservesToStorage();
-    reserveProductPopup.classList.add("hidden");
-    showReserveList();
-  } else {
-    // 新規追加
-    reserves.push({
-      name: personName,
-      checked: false,
-      items: selectedProducts
-    });
-    saveReservesToStorage();
-    reserveProductPopup.classList.add("hidden");
-    showReserveList();
-  }
+    if (reserve) {
+      // 既存リストの内容を上書き
+      reserve.name = personName;
+      reserve.items = selectedProducts;
+      saveReservesToStorage();
+      reserveProductPopup.classList.add("hidden");
+      showReserveList();
+    } else {
+      // 新規追加
+      reserves.push({
+        name: personName,
+        checked: false,
+        items: selectedProducts
+      });
+      saveReservesToStorage();
+      reserveProductPopup.classList.add("hidden");
+      showReserveList();
+    }
   };
 }
 // escapeHtmlユーティリティ
@@ -1662,7 +1689,7 @@ function escapeHtml(str) {
     .replace(/>/g, "&gt;");
 }
 
-document.getElementById("btnSalesInfo").onclick = function() {
+document.getElementById("btnSalesInfo").onclick = function () {
   // 他の画面を非表示
   document.getElementById("sectionUriko").classList.add("hidden");
   document.getElementById("salesInfoView").classList.remove("hidden");
@@ -1723,7 +1750,7 @@ document.getElementById("btnSalesInfo").onclick = function() {
 };
 
 // 戻るボタンも同様
-document.getElementById("salesInfoBack").onclick = function() {
+document.getElementById("salesInfoBack").onclick = function () {
   hideSalesInfoView();
   // 売り子タブの初期画面（ボタン4つ）を表示
   document.getElementById("sectionUriko").classList.remove("hidden");

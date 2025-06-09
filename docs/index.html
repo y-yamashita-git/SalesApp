@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -8,6 +9,7 @@
   <link rel="manifest" href="./manifest.json" />
   <meta name="apple-mobile-web-app-capable" content="yes">
 </head>
+
 <body>
   <!-- タブ -->
   <div class="tabs">
@@ -86,45 +88,45 @@
 
 
   <!-- 商品登録フォーム（従来のフォームはhiddenのまま） -->
-    <div id="productFormView" class="hidden">
-      <div style="padding:12px;">
-        <div>
-          <label>タイトル<br>
-            <input type="text" id="productTitle" style="width:100%;">
-          </label>
-        </div>
-        <div style="margin-top:8px;">
-          <label>しゅるい
-            <select id="productType">
-              <option value="book">本</option>
-              <option value="goods">グッズ</option>
-            </select>
-          </label>
-          <label style="margin-left:8px;">
-            <input type="checkbox" id="productR18"> R18
-          </label>
-        </div>
-        <div style="margin-top:8px;">
-          <label>画像<br>
-            <input type="file" id="productImage" accept="image/*" style="display:none;">
-          </label>
-        </div>
-        <div style="margin-top:8px;">
-          <label>金額<br>
-            <input type="number" id="productPrice" style="width:100px;"> 円
-          </label>
-        </div>
-        <div style="margin-top:8px;">
-          <label>メモ<br>
-            <textarea id="productMemo" style="width:100%;"></textarea>
-          </label>
-        </div>
-        <div style="margin-top:12px;display:flex;gap:8px;">
-          <button id="btnProductCancel" class="btn">キャンセル</button>
-          <button id="btnProductRegister" class="btn">登録</button>
-        </div>
+  <div id="productFormView" class="hidden">
+    <div style="padding:12px;">
+      <div>
+        <label>タイトル<br>
+          <input type="text" id="productTitle" style="width:100%;">
+        </label>
+      </div>
+      <div style="margin-top:8px;">
+        <label>しゅるい
+          <select id="productType">
+            <option value="book">本</option>
+            <option value="goods">グッズ</option>
+          </select>
+        </label>
+        <label style="margin-left:8px;">
+          <input type="checkbox" id="productR18"> R18
+        </label>
+      </div>
+      <div style="margin-top:8px;">
+        <label>画像<br>
+          <input type="file" id="productImage" accept="image/*" style="display:none;">
+        </label>
+      </div>
+      <div style="margin-top:8px;">
+        <label>金額<br>
+          <input type="number" id="productPrice" style="width:100px;"> 円
+        </label>
+      </div>
+      <div style="margin-top:8px;">
+        <label>メモ<br>
+          <textarea id="productMemo" style="width:100%;"></textarea>
+        </label>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;">
+        <button id="btnProductCancel" class="btn">キャンセル</button>
+        <button id="btnProductRegister" class="btn">登録</button>
       </div>
     </div>
+  </div>
 
   <!-- 会計画面レイアウト -->
   <div class="checkout-panel" style="flex-direction:column; height:100%; display:none;">
@@ -144,86 +146,88 @@
   </div>
 
   <!-- 商品一覧画面などと同じ階層に追加 -->
-<div id="salesInfoView" class="hidden">
-  <div class="sales-table">
-    <h2>売上情報</h2>
-    <div id="salesInfoTable"></div>
-    <div class="sales-total" id="salesInfoTotal"></div>
-    <div class="sales-back-row">
-      <button id="salesInfoBack" class="btn">↩</button>
+  <div id="salesInfoView" class="hidden">
+    <div class="sales-table">
+      <h2>売上情報</h2>
+      <div id="salesInfoTable"></div>
+      <div class="sales-total" id="salesInfoTotal"></div>
+      <div class="sales-back-row">
+        <button id="salesInfoBack" class="btn">↩</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- 取り置きリスト画面（買い子タブ風レイアウト） -->
-<div class="reserve-list-panel" style="display:none;">
-  <div class="reserve-list-title">取り置きリスト</div>
-  <!-- メッセージ欄（必要な場合のみJSで表示） -->
-  <div class="reserve-list-message" style="margin-bottom:8px; color:#1976d2; display:none;">
-    ※チェックしたら取り置き済みとして扱います
-  </div>
-  <div class="reserve-list-scroll">
-    <!-- ヘッダー行 -->
-    <div class="reserve-list-header">
-      <span class="reserve-list-header-name">名前</span>
-      <span class="reserve-list-header-status">引取状況</span>
+  <!-- 取り置きリスト画面（買い子タブ風レイアウト） -->
+  <div class="reserve-list-panel" style="display:none;">
+    <div class="reserve-list-title">取り置きリスト</div>
+    <!-- メッセージ欄（必要な場合のみJSで表示） -->
+    <div class="reserve-list-message" style="margin-bottom:8px; color:#1976d2; display:none;">
+      ※チェックしたら取り置き済みとして扱います
     </div>
-    <div class="reserve-list-grid">
-      <!-- JSでリストがここに挿入されます -->
+    <div class="reserve-list-scroll">
+      <!-- ヘッダー行 -->
+      <div class="reserve-list-header">
+        <span class="reserve-list-header-name">名前</span>
+        <span class="reserve-list-header-status">引取状況</span>
+      </div>
+      <div class="reserve-list-grid">
+        <!-- JSでリストがここに挿入されます -->
+      </div>
+    </div>
+    <div class="reserve-list-btn-row">
+      <button id="btnReserveBack" class="btn">↩</button>
+      <button id="btnReserveNew" class="btn">新規登録</button>
     </div>
   </div>
-  <div class="reserve-list-btn-row">
-    <button id="btnReserveBack" class="btn">↩</button>
-    <button id="btnReserveNew" class="btn">新規登録</button>
-  </div>
-</div>
 
-<!-- 取り置きリスト新規登録用ポップアップ -->
-<div id="reserveProductPopup" class="overlay hidden">
-  <div class="popup-content">
-    <div class="popup-title">取り置き商品選択</div>
-    <input type="text" id="reservePersonName" class="reserve-person-name" placeholder="名前" style="width:100%;margin-bottom:12px;padding:8px;font-size:1em;">
-    <div id="reserveProductGrid" class="reserve-product-grid"></div>
-    <div class="popup-btn-row">
-      <button id="btnReserveProductCancel" class="btn">↩</button>
-      <button id="btnReserveProductDelete" class="btn">取消</button>
-      <button id="btnReserveProductOk" class="btn">OK</button>
+  <!-- 取り置きリスト新規登録用ポップアップ -->
+  <div id="reserveProductPopup" class="overlay hidden">
+    <div class="popup-content">
+      <div class="popup-title">取り置き商品選択</div>
+      <input type="text" id="reservePersonName" class="reserve-person-name" placeholder="名前"
+        style="width:100%;margin-bottom:12px;padding:8px;font-size:1em;">
+      <div id="reserveProductGrid" class="reserve-product-grid"></div>
+      <div class="popup-btn-row">
+        <button id="btnReserveProductCancel" class="btn">↩</button>
+        <button id="btnReserveProductDelete" class="btn">取消</button>
+        <button id="btnReserveProductOk" class="btn">OK</button>
+      </div>
     </div>
   </div>
-</div>
 
   <!-- 会計確認画面テンプレート -->
-<template id="checkout-confirm-template">
-  <div class="checkout-confirm-panel">
-    <div class="checkout-confirm-list-scroll">
-      <div class="checkout-confirm-list-grid"></div>
+  <template id="checkout-confirm-template">
+    <div class="checkout-confirm-panel">
+      <div class="checkout-confirm-list-scroll">
+        <div class="checkout-confirm-list-grid"></div>
+      </div>
+      <div class="checkout-confirm-total">合計：<span id="checkoutTotal"></span>円</div>
+      <div class="checkout-confirm-row">
+        <input type="number" id="payInput" placeholder="金額">
+        <button id="btnJust" class="btn">ぴったり</button>
+      </div>
+      <div class="checkout-confirm-calc" id="checkoutCalcPad"></div>
+      <div class="checkout-confirm-btn-row">
+        <button id="btnCheckoutBack" class="btn">↩</button>
+        <button id="btnCheckoutOk" class="btn">会計</button>
+      </div>
     </div>
-    <div class="checkout-confirm-total">合計：<span id="checkoutTotal"></span>円</div>
-    <div class="checkout-confirm-row">
-      <input type="number" id="payInput" placeholder="金額">
-      <button id="btnJust" class="btn">ぴったり</button>
-    </div>
-    <div class="checkout-confirm-calc" id="checkoutCalcPad"></div>
-    <div class="checkout-confirm-btn-row">
-      <button id="btnCheckoutBack" class="btn">↩</button>
-      <button id="btnCheckoutOk" class="btn">会計</button>
-    </div>
-  </div>
-</template>
+  </template>
 
-<!-- お釣り・年齢確認ポップアップテンプレート -->
-<template id="change-popup-template">
-  <div class="checkout-confirm-panel" style="text-align:center;">
-    <div class="change-message"></div>
-    <div class="age-check"></div>
-    <div style="margin-top:18px;">
-      <button id="btnKaikeiNew" class="btn">新規</button>
+  <!-- お釣り・年齢確認ポップアップテンプレート -->
+  <template id="change-popup-template">
+    <div class="checkout-confirm-panel" style="text-align:center;">
+      <div class="change-message"></div>
+      <div class="age-check"></div>
+      <div style="margin-top:18px;">
+        <button id="btnKaikeiNew" class="btn">新規</button>
+      </div>
     </div>
-  </div>
-</template>
+  </template>
 
   <!-- スクリプト -->
   <script src="./js/script.js"></script>
-  
+
 </body>
+
 </html>
