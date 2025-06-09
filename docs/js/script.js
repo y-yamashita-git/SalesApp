@@ -1773,6 +1773,11 @@ document.getElementById("btnSalesInfo").onclick = function () {
     }
   });
 
+  // ★元の在庫数を「売れた数＋残在庫数」にする
+  Object.values(productMap).forEach(p => {
+    p.originalStock = p.sold + p.currentStock;
+  });
+
   // 表HTML生成
   let tableHtml = `
     <table>
