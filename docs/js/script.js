@@ -1058,8 +1058,11 @@ function renderCheckoutProducts() {
     // 取り置き分（チェック有無関係なく全て）を計算
     let reservedCount = 0;
     reserves.forEach(r => {
-      const item = r.items && r.items.find(it => it.product === p.title);
-      if (item) reservedCount += item.count;
+      // チェック済み（会計済み）は在庫から除外する
+      if (!r.checked) {
+        const item = r.items && r.items.find(it => it.product === p.title);
+        if (item) reservedCount += item.count;
+      }
     });
     const stock = Number(p.stock) || 0;
     const maxCount = stock - reservedCount;
@@ -1545,7 +1548,7 @@ function showReserveProductPopup(reserve = null, isKaikeiTab = false) {
     // 既存の取り置き合計数（自分自身を除く）
     let reservedCount = 0;
     reserves.forEach(r => {
-      if (!reserve || r !== reserve) {
+      if ((!reserve || r !== reserve) && !r.checked) {
         const item = r.items && r.items.find(it => it.product === products[idx].title);
         if (item) reservedCount += item.count;
       }

@@ -1080,10 +1080,7 @@ input[type="button"]:disabled {
 }
 
 .reserve-product-card {
-  border: 1px solid #bbb;
-  border-radius: 8px;
-  padding: 8px;
-  background: #fafafa;
+  padding: 1px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1274,4 +1271,26 @@ select {
   background-color: #fff;
   border: 1px solid #bbb;
   border-radius: 6px;
+}
+
+#reserveProductPopup .popup-content {
+  width: 33vw;
+  min-width: 280px;
+  max-width: 600px;
+  box-sizing: border-box;
+}
+
+#reserveProductPopup .popup-btn-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 18px;
+}
+
+#reserveProductPopup .popup-btn-row .btn {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
 }
