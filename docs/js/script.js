@@ -741,8 +741,8 @@ function showProductPopup(product = null, idx = null) {
     <!-- 4行目: ボタン -->
     <div class="popup-btn-row">
       <button id="popupProductBack" class="btn" type="button">↩</button>
-      <button id="popupProductRegister" class="btn" type="button">${product ? "更新" : "登録"}</button>
       ${product !== null ? `<button id="popupProductDelete" class="btn" type="button" style="background:#d32f2f;">削除</button>` : ""}
+      <button id="popupProductRegister" class="btn" type="button">${product ? "更新" : "登録"}</button>
     </div>
   `;
 

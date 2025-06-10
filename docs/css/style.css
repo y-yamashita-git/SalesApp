@@ -70,6 +70,16 @@ th {
   width: 80px;
 }
 
+.btnDel {
+  background: #f32121 !important;
+  color: white !important;
+}
+
+.btnDel:hover,
+.btnDel:active {
+  background: #b71c1c !important;
+}
+
 .btn:hover,
 .btn:active {
   background: #1976d2;
