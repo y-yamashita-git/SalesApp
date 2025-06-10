@@ -49,8 +49,9 @@
         <button id="btnAddProduct" style="font-size:1.5em;">＋</button>
       </div>
       <div id="productList" style="display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;"></div>
-      <div style="display:flex;justify-content:center;margin-top:16px;">
-        <button id="btnProductBack" class="btn" style="width:80px;">↩</button>
+      <div class="product-list-btn-row">
+        <button id="btnProductBack" class="btn">↩</button>
+        <button id="btnProductSave" class="btn">保存</button>
       </div>
     </div>
   </div>
@@ -139,6 +140,7 @@
         <!-- JSで商品カードがここに動的に挿入されます -->
       </div>
     </div>
+    <div id="checkoutCountTable" class="checkout-count-table"></div>
     <div class="checkout-bottom-bar">
       <button class="back-btn">↩</button>
       <button class="checkout-btn">会計</button>

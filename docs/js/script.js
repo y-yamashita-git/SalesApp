@@ -48,6 +48,7 @@ const productImage = document.getElementById("productImage");
 const productPrice = document.getElementById("productPrice");
 const productMemo = document.getElementById("productMemo");
 const btnProductBack = document.getElementById("btnProductBack");
+const btnProductSave = document.getElementById("btnProductSave");
 
 // 会計画面の表示・非表示制御
 const checkoutPanel = document.querySelector('.checkout-panel');
@@ -948,6 +949,11 @@ btnProductBack.addEventListener("click", () => {
   urikoButtons.classList.remove("hidden");
 });
 
+btnProductSave.addEventListener("click", () => {
+  productListView.classList.add("hidden");
+  urikoButtons.classList.remove("hidden");
+});
+
 // HTMLエスケープ
 function escapeHtml(str) {
   return str.replace(/[&<>"']/g, function (m) {
@@ -1091,6 +1097,49 @@ function renderCheckoutProducts() {
 
     grid.appendChild(card);
   });
+
+  // 商品一覧描画後に表も更新
+  renderCheckoutCountTable();
+}
+
+
+function renderCheckoutCountTable() {
+  const tableDiv = document.getElementById('checkoutCountTable');
+  if (!tableDiv) return;
+
+  const counts = window.checkoutCounts || {};
+  const productsList = products || [];
+
+  const rows = [];
+  let total = 0;
+  productsList.forEach((product, idx) => {
+    const count = counts[idx] || 0;
+    if (count > 0) {
+      const price = Number(product.price) || 0;
+      rows.push(`<tr>
+        <td>${escapeHtml(product.title)}</td>
+        <td>${count}</td>
+        <td>${price * count}円</td>
+      </tr>`);
+      total += price * count;
+    }
+  });
+
+  if (rows.length === 0) {
+    tableDiv.innerHTML = '';
+    return;
+  }
+
+  tableDiv.innerHTML = `
+    <table>
+      <thead>
+        <tr><th>商品名</th><th>数量</th><th>金額</th></tr>
+      </thead>
+      <tbody>
+        ${rows.join('')}
+      </tbody>
+    </table>
+  `;
 }
 
 // ------------------------------

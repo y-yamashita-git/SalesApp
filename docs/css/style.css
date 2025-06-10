@@ -1325,3 +1325,38 @@ select {
 .reserve-list-item input[type="checkbox"] {
   accent-color: #1976d2;
 }
+
+.product-list-btn-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0;
+  margin-top: 16px;
+}
+
+.checkout-count-table {
+  margin: 12px 0 0 0;
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: 0;
+  margin-right: 0;
+  box-sizing: border-box;
+}
+.checkout-count-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fafafa;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px #0001;
+}
+.checkout-count-table th,
+.checkout-count-table td {
+  padding: 6px 4px;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+  font-size: 1em;
+}
+.checkout-count-table th {
+  background: #e3f2fd;
+  font-weight: bold;
+}
