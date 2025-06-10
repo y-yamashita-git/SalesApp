@@ -36,7 +36,6 @@ let products = []; // 商品リスト
 const btnProduct = document.getElementById("btnProduct");
 const productListView = document.getElementById("productListView");
 const productFormView = document.getElementById("productFormView");
-const btnAddProduct = document.getElementById("btnAddProduct");
 const productList = document.getElementById("productList");
 const btnProductCancel = document.getElementById("btnProductCancel");
 const btnProductRegister = document.getElementById("btnProductRegister");
@@ -858,14 +857,6 @@ function showProductPopup(product = null, idx = null) {
   productPopupOverlay.classList.remove("hidden");
 
 }
-
-// ＋ボタンで新規登録ポップアップ
-btnAddProduct.addEventListener("click", () => {
-  // 商品一覧画面を表示、商品登録フォームを非表示
-  productListView.classList.remove("hidden");
-  productFormView.classList.add("hidden");
-  showProductPopup();
-});
 
 // 商品画像クリックで編集ポップアップ
 function renderProductList() {
