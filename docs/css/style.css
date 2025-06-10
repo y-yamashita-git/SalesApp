@@ -1,0 +1,1364 @@
+/* タブ */
+.tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 8px;
+}
+
+.tab {
+  flex: 1;
+  padding: 12px 0;
+  background: #f5f5f5;
+  border: none;
+  border-radius: 12px 12px 0 0;
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #1976d2;
+  transition: background 0.2s;
+}
+
+.tab.active {
+  background: #bbdefb;
+  color: #0d47a1;
+}
+
+/* タブコンテンツ */
+.tab-content {
+  padding: 0 8px 16px 8px;
+}
+
+.tab-content.active,
+.tab-content:not(.hidden) {
+  display: block;
+}
+
+/* テーブル */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 12px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px #0001;
+}
+
+th,
+td {
+  padding: 8px 4px;
+  border-bottom: 1px solid #939393;
+  text-align: center;
+  font-size: 15px;
+}
+
+th {
+  background: #fde3fa;
+  font-weight: bold;
+}
+
+/* ボタン */
+.btn {
+  margin: 8px 0;
+  cursor: pointer;
+  font-size: 14px;
+  background: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 0;
+  transition: background 0.2s;
+  width: 80px;
+}
+
+.btnDel {
+  background: #f32121 !important;
+  color: white !important;
+}
+
+.btnDel:hover,
+.btnDel:active {
+  background: #b71c1c !important;
+}
+
+.btn:hover,
+.btn:active {
+  background: #1976d2;
+}
+
+/* 売り子ボタンリスト */
+#urikoButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: #e3f2fd;
+  border-radius: 12px;
+  margin: 16px 0;
+}
+
+#urikoButtons button {
+  width: 100%;
+  padding: 14px 0;
+  font-size: 1.1em;
+  border: none;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 6px #0001;
+  margin-bottom: 0;
+  transition: background 0.2s;
+}
+
+#urikoButtons button:active {
+  background: #bbdefb;
+}
+
+/* 商品一覧カード */
+#productList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.product-card {
+  position: relative;
+  width: 120px;
+  height: 160px;
+  background: #f5f5f5;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0001;
+  padding-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.product-card img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px 12px 0 0;
+  background: #eee;
+}
+
+.product-card .price-tag {
+  position: absolute;
+  right: 8px;
+  bottom: 40px;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: bold;
+  color: #1976d2;
+  box-shadow: 0 1px 4px #0002;
+}
+
+.product-card .title-row {
+  margin-top: 6px;
+  font-weight: bold;
+  font-size: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.product-card .r18 {
+  font-size: 1.1em;
+  margin-right: 2px;
+  color: #d32f2f;
+}
+
+/* 商品一覧画面ヘッダー */
+#productListView>div:first-child {
+  margin-bottom: 8px;
+}
+
+#btnAddProduct {
+  background: #fff;
+  border: 2px solid #1976d2;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  color: #1976d2;
+  font-size: 1.5em;
+  font-weight: bold;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px #0001;
+  transition: background 0.2s;
+}
+
+#btnAddProduct:active {
+  background: #bbdefb;
+}
+
+/* 商品登録フォーム */
+#productFormView {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0001;
+  margin: 16px;
+  padding: 16px;
+}
+
+#productFormView input[type="text"],
+#productFormView input[type="number"],
+#productFormView textarea {
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  padding: 6px;
+  margin-top: 4px;
+  font-size: 1em;
+}
+
+#productFormView textarea {
+  min-height: 48px;
+  resize: vertical;
+}
+
+#productFormView label {
+  font-size: 0.97em;
+}
+
+#productFormView .btn {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 8px;
+  border: none;
+  background: #1976d2;
+  color: #fff;
+  font-size: 1em;
+  margin: 0 2px;
+  transition: background 0.2s;
+}
+
+#productFormView .btn:active {
+  background: #1565c0;
+}
+
+/* オーバーレイ（ポップアップ・フォーム） */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+/* フォーム・ポップアップ本体 */
+.form-container,
+.popup {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* フォーム内ボタン配置 */
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* 入力フィールド */
+input[type="text"],
+input[type="time"] {
+  width: 100%;
+  padding: 8px;
+  margin: 6px 0;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+/* チェックボックスとラベル */
+label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 16px;
+}
+
+/* ポップアップの中身 */
+.popup p {
+  margin: 6px 0;
+  font-size: 16px;
+}
+
+/* 隠す用 */
+.hidden {
+  display: none !important;
+}
+
+/* 商品一覧カード */
+.product-card {
+  width: 120px;
+  background: #f5f5f5;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0001;
+  padding-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.product-card .img-wrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.product-card img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px 12px 0 0;
+  background: #eee;
+  display: block;
+}
+
+.product-card .price-tag {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 2px 10px;
+  border-radius: 16px;
+  font-size: 1em;
+  font-weight: bold;
+  color: #1976d2;
+  box-shadow: 0 1px 4px #0002;
+  pointer-events: none;
+}
+
+.product-card .info-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 1em;
+  width: 100%;
+  padding-left: 8px;
+  padding-right: 8px;
+  box-sizing: border-box;
+}
+
+.product-card .r18 {
+  font-size: 1.1em;
+  color: #d32f2f;
+  margin-right: 2px;
+}
+
+.product-card .product-title {
+  font-weight: bold;
+  flex: 1;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 商品登録ポップアップ全体 */
+#productPopupOverlay .form-container {
+  max-width: 370px;
+  width: 95vw;
+  padding: 18px 10px 16px 10px;
+  border-radius: 16px;
+  background: #fff;
+}
+
+/* 1行目: タイトル */
+#popupProductTitle {
+  width: 100%;
+  font-size: 1.1em;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #bbb;
+  margin-bottom: 0;
+}
+
+/* 2行目: 画像＋ラジオボタン群2列レイアウト */
+.popup-row2 {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 0;
+}
+
+.popup-img-col {
+  flex: 0 0 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.popup-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #ddd;
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  display: block;
+  cursor: pointer;
+}
+
+.img-label {
+  cursor: pointer;
+}
+
+.popup-radio-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+}
+
+.radio-group {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+/* ラジオボタン（ボタン風） */
+.radio-btn {
+  border-radius: 8px;
+  border: 2px solid #1976d2;
+  background: #f5f5f5;
+  color: #1976d2;
+  font-weight: bold;
+  padding: 6px 18px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  user-select: none;
+  margin: 0;
+  display: inline-block;
+}
+
+.radio-btn input[type="radio"] {
+  display: none;
+}
+
+.radio-btn input[type="radio"]:checked+span {
+  background: #1976d2;
+  color: #fff;
+  border-radius: 8px;
+  border: 2px solid #1976d2;
+  box-shadow: none;
+}
+
+.radio-btn input[type="radio"]:checked+span {
+  /* 追加で親の枠線も青に */
+  outline: none;
+}
+
+.radio-btn input[type="radio"]:checked~span {
+  background: #1976d2;
+  color: #fff;
+  border-radius: 8px;
+  border: 2px solid #1976d2;
+}
+
+.radio-btn span {
+  pointer-events: none;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+
+/* 選択時、親label自体の枠線も青に */
+.radio-btn input[type="radio"]:checked+span,
+.radio-btn input[type="radio"]:checked~span {
+  background: #1976d2;
+  color: #fff;
+  border-radius: 8px;
+  border: 2px solid #1976d2;
+}
+
+.radio-btn input[type="radio"]:checked+span {
+  box-shadow: 0 0 0 2px #1976d2;
+}
+
+.radio-btn:has(input[type="radio"]:checked) {
+  background: #1976d2;
+  color: #fff;
+  border-color: #1976d2;
+  box-shadow: none;
+}
+
+/* 画像内金額バッジ（〇） */
+.price-tag {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  background: #fff;
+  color: #1976d2;
+  border: 2px solid #1976d2;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1em;
+  box-shadow: 0 1px 4px #0002;
+  pointer-events: none;
+}
+
+/* 3行目: メモ */
+#popupProductMemo {
+  width: 100%;
+  min-height: 60px;
+  border-radius: 8px;
+  border: 1px solid #bbb;
+  padding: 8px;
+  font-size: 1em;
+  resize: vertical;
+  margin-top: 0;
+  margin-bottom: 0;
+  box-sizing: border-box;
+}
+
+/* 4行目: ボタン横並び・等間隔 */
+.popup-btn-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+#popupProductBack,
+#popupProductRegister,
+#popupProductDelete {
+  flex: 1;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 0;
+  font-size: 1em;
+  transition: background 0.2s;
+  margin: 0;
+}
+
+#popupProductBack {
+  background: #1976d2;
+  color: #fff;
+}
+
+#popupProductRegister {
+  background: #1976d2;
+  color: #fff;
+}
+
+#popupProductDelete {
+  background: #d32f2f;
+  color: #fff;
+}
+
+#productPopupClose {
+  display: none !important;
+}
+
+#popupProductBack:active {
+  background: #757575;
+}
+
+#popupProductRegister:active {
+  background: #1565c0;
+}
+
+#popupProductDelete:active {
+  background: #b71c1c;
+}
+
+/* ラベルを上に */
+#productPopupContent label {
+  display: block;
+  font-size: 1em;
+  margin-bottom: 2px;
+}
+
+/* 会計パネル全体 */
+.checkout-panel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* 1行目: タブ（固定） */
+.checkout-tabs {
+  display: flex;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 2;
+  border-bottom: 1px solid #eee;
+}
+
+.checkout-tabs .tab {
+  flex: 1;
+  padding: 12px 0;
+  font-size: 1.1em;
+  background: #f5f5f5;
+  border: none;
+  border-radius: 0;
+  font-weight: bold;
+  color: #1976d2;
+  transition: background 0.2s;
+}
+
+.checkout-tabs .tab.active {
+  background: #bbdefb;
+  color: #0d47a1;
+}
+
+/* 2行目以降: 商品グリッド（スクロール） */
+.checkout-products-scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 12px 8px 12px 8px;
+}
+
+.checkout-products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 50px);
+  gap: 12px;
+  justify-content: flex-start;
+}
+
+/* 商品カード */
+.checkout-product {
+  position: relative;
+  width: 50px;
+  height: 50px;
+}
+
+.checkout-product img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #eee;
+  display: block;
+  cursor: pointer;
+}
+
+/* 選択数バッジ */
+.count-badge {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background: #fff;
+  color: #1976d2;
+  border: 2px solid #1976d2;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  font-size: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  pointer-events: none;
+  box-shadow: 0 1px 4px #0002;
+}
+
+/* マイナスボタン */
+.minus-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: #d32f2f;
+  color: #fff;
+  font-size: 1em;
+  font-weight: bold;
+  display: none;
+  /* デフォルト非表示、選択時に表示 */
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1;
+  padding: 0;
+  line-height: 1;
+}
+
+.checkout-product.selected .minus-btn {
+  display: flex;
+}
+
+/* 下部バー（固定） */
+.checkout-bottom-bar {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  display: flex;
+  gap: 10px;
+  padding: 10px 8px;
+  border-top: 1px solid #eee;
+  z-index: 2;
+}
+
+.back-btn,
+.checkout-btn {
+  flex: 1;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 0;
+  font-size: 1.1em;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.back-btn {
+  background: #1976d2;
+  color: #fff;
+}
+
+.checkout-btn {
+  background: #1976d2;
+  color: #fff;
+}
+
+.btn.disabled,
+button:disabled,
+input[type="button"]:disabled {
+  background: #dbdbdb !important;
+  color: #888 !important;
+  cursor: not-allowed !important;
+  border: none !important;
+}
+
+/* 会計画面の商品グリッド：列数は画面幅に応じて自動 */
+.checkout-products-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: flex-start;
+}
+
+/* 商品カードを商品一覧画面と同じ大きさ・正方形に */
+.checkout-product {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 画像も商品一覧画面と同じ大きさ・正方形に */
+.checkout-product img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  background: #eee;
+  display: block;
+  cursor: pointer;
+}
+
+/* 選択数バッジ：押下数が0のときは非表示 */
+.count-badge {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background: #fff;
+  color: #1976d2;
+  border: 2px solid #1976d2;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  font-size: 1em;
+  display: none;
+  /* デフォルト非表示 */
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  pointer-events: none;
+  box-shadow: 0 1px 4px #0002;
+}
+
+/* 選択数が1以上のときだけ表示 */
+.checkout-product .count-badge:not(:empty) {
+  display: flex;
+}
+
+/* マイナスボタン */
+.minus-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: #d32f2f;
+  color: #fff;
+  font-size: 1em;
+  font-weight: bold;
+  display: none;
+  /* デフォルト非表示、選択時に表示 */
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1;
+  padding: 0;
+  line-height: 1;
+}
+
+/* 会計確認画面 */
+.checkout-confirm-panel {
+  background: #fff;
+  border-radius: 12px;
+  width: 33vw;
+  min-width: 280px;
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 16px;
+  box-shadow: 0 2px 16px #0002;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checkout-confirm-list-scroll {
+  max-height: calc(3 * 2.6em + 2 * 8px);
+  overflow-y: auto;
+  margin-bottom: 8px;
+}
+
+.checkout-confirm-list-grid {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 8px;
+}
+
+.checkout-confirm-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.1em;
+  background: #f5f5f5;
+  border-radius: 6px;
+  padding: 4px 8px;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 2.6em;
+}
+
+.checkout-confirm-total {
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align: right;
+  margin-bottom: 8px;
+}
+
+.checkout-confirm-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+#payInput {
+  height: 48px;
+  font-size: 1.2em;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 2px solid #1976d2;
+  min-width: 0;
+  box-sizing: border-box;
+  flex: 2 2 0;
+  /* 電卓ボタン2つ分の比率で可変 */
+}
+
+#btnJust.btn {
+  height: 48px;
+  font-size: 1.1em;
+  padding: 0;
+  border-radius: 8px;
+  flex: 1 1 0;
+  /* 電卓ボタン1つ分の比率で可変 */
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.checkout-confirm-btn-row {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.checkout-confirm-btn-row .btn {
+  height: 48px;
+  min-width: 96px;
+  font-size: 1.1em;
+  border-radius: 8px;
+  box-sizing: border-box;
+  padding: 0;
+  flex: 1 1 0;
+}
+
+.calc-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.calc-btn {
+  height: 48px;
+  font-size: 1.1em;
+  border-radius: 8px;
+  border: 1px solid #bbb;
+  background: #fafafa;
+  cursor: pointer;
+  flex: 1 1 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.age-check-alert {
+  color: #d32f2f;
+  font-weight: bold;
+  margin-top: 12px;
+}
+
+.age-check-date {
+  margin-top: 4px;
+}
+
+/* 取り置きリストパネル */
+.reserve-list-panel {
+  flex-direction: column;
+  height: 100%;
+  display: none;
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100vw;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.reserve-list-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.reserve-list-header,
+.reserve-list-grid,
+.reserve-list-item {
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.reserve-list-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: bold;
+  padding: 4px 8px;
+  background: #d6efff;
+}
+
+.reserve-list-header-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reserve-list-header-status {
+  width: auto;
+  text-align: right;
+}
+
+.reserve-list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0;
+  background: #fff;
+  overflow-x: hidden;
+}
+
+.reserve-list-item.checked {
+  background: #ccc;
+}
+
+.reserve-list-item span {
+  font-weight: bold;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reserve-list-item input[type="checkbox"] {
+  margin-right: 0;
+  flex: 0 0 auto;
+}
+
+.reserve-list-btn-row {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 12px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  box-sizing: border-box;
+  justify-content: space-between;
+}
+
+.overlay {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+.popup-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px 20px 16px 20px;
+  min-width: 320px;
+  max-width: 95vw;
+  box-shadow: 0 4px 24px #0003;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.popup-title {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.reserve-product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.reserve-product-card {
+  padding: 1px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.reserve-product-img-wrap {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.reserve-product-card img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.reserve-product-count-badge {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background: #fff;
+  color: #1976d2;
+  border: 2px solid #1976d2;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  font-size: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  pointer-events: none;
+  box-shadow: 0 1px 4px #0002;
+  z-index: 2;
+}
+
+.reserve-product-minus-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: #d32f2f;
+  color: #fff;
+  font-size: 1em;
+  font-weight: bold;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3;
+  padding: 0;
+  line-height: 1;
+}
+
+.reserve-product-card.selected .reserve-product-minus-btn {
+  display: flex;
+}
+
+.reserve-person-name {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 8px;
+  font-size: 1em;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+  box-sizing: border-box;
+}
+
+
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+.sales-total {
+  font-weight: bold;
+  text-align: right;
+  margin-bottom: 12px;
+  color: #1976d2;
+  font-size: 1.1em;
+}
+
+.sales-back-row {
+  text-align: center;
+}
+
+#btnSalesInfoBack {
+  padding: 8px 32px;
+  font-size: 1.1em;
+}
+
+.sales-table {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px 16px;
+  max-width: 600px;
+  min-width: 320px;
+  margin: 40px auto;
+}
+
+.sales-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 12px;
+}
+
+.sales-table th,
+.sales-table td {
+  padding: 6px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.sales-table th {
+  background: #d6efff;
+}
+
+.sales-total {
+  font-weight: bold;
+  text-align: right;
+  margin-bottom: 12px;
+  color: #1976d2;
+  font-size: 1.1em;
+}
+
+.sales-back-row {
+  text-align: center;
+}
+
+#btnSalesInfoBack {
+  padding: 8px 32px;
+  font-size: 1.1em;
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #fff;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+}
+
+#reserveProductPopup .popup-content {
+  width: 33vw;
+  min-width: 280px;
+  max-width: 600px;
+  box-sizing: border-box;
+}
+
+#reserveProductPopup .popup-btn-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 18px;
+}
+
+#reserveProductPopup .popup-btn-row .btn {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+}
+
+.tab.kaiko.active {
+  background: #f8bbd0 !important; /* ピンク */
+  color: #ad1457 !important;
+}
+
+.reserve-list-panel,
+.reserve-list-header,
+.reserve-list-grid,
+.reserve-list-item,
+.reserve-list-btn-row {
+  width: 90vw !important;
+  max-width: 900px;
+  min-width: 0;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+.reserve-list-item {
+  width: 100% !important;
+  max-width: 900px;
+  min-width: 0;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* チェックボックスのdisabled時も通常色で表示（Webkit/Chrome/Safari向け） */
+.reserve-list-item input[type="checkbox"]:disabled {
+  filter: none !important;
+  opacity: 1 !important;
+  background: none !important;
+  -webkit-filter: none !important;
+  pointer-events: none;
+}
+
+/* Firefox向け: チェックボックスの不透明度を上書き */
+.reserve-list-item input[type="checkbox"]:disabled::-moz-checkbox {
+  opacity: 1 !important;
+}
+
+/* チェックボックスの枠線や色を強制的に指定（必要に応じて） */
+.reserve-list-item input[type="checkbox"] {
+  accent-color: #1976d2;
+}
+
+.product-list-btn-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0;
+  margin-top: 16px;
+}
+
+.checkout-count-table {
+  margin: 12px 0 0 0;
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: 0;
+  margin-right: 0;
+  box-sizing: border-box;
+}
+.checkout-count-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fafafa;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px #0001;
+}
+.checkout-count-table th,
+.checkout-count-table td {
+  padding: 6px 4px;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+  font-size: 1em;
+}
+.checkout-count-table th {
+  background: #e3f2fd;
+  font-weight: bold;
+}
