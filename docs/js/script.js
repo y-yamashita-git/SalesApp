@@ -873,16 +873,31 @@ function renderProductList() {
 
   // 商品が1つもない場合のみ noProducts.png を表示
   if (!products || products.length === 0) {
-    const noProductsImg = document.createElement("img");
-    noProductsImg.src = noProductsImgBase64;
-    noProductsImg.alt = "商品がありません";
-    noProductsImg.style.display = "block";
-    noProductsImg.style.margin = "32px auto";
-    noProductsImg.style.maxWidth = "200px";
-    productList.appendChild(noProductsImg);
+    // ＋カード
+    const addCard = document.createElement("div");
+    addCard.className = "product-card add-card";
+    addCard.style.cursor = "pointer";
+    // 幅・高さはCSSの.product-cardに依存
+    addCard.innerHTML = `
+      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+        <span style="font-size:2.5em;color:#1976d2;line-height:1;">＋</span>
+      </div>
+    `;
+    addCard.onclick = () => showProductPopup();
+    productList.appendChild(addCard);
+
+    // noProducts画像
+    const noImgDiv = document.createElement("div");
+    noImgDiv.style.width = "100%";
+    noImgDiv.style.textAlign = "center";
+    noImgDiv.style.margin = "24px 0";
+    noImgDiv.innerHTML = `
+      <img src="img/noProducts.png" alt="商品がありません" style="max-width:180px;">
+      <div style="color:#888;margin-top:12px;">商品がありません</div>
+    `;
+    productList.appendChild(noImgDiv);
     return;
   }
-
 
   products.forEach((p, idx) => {
     const card = document.createElement("div");
@@ -944,8 +959,21 @@ function renderProductList() {
 
     productList.appendChild(card);
   });
-}
 
+  // 最後尾に＋カードを追加
+  const addCard = document.createElement("div");
+  addCard.className = "product-card add-card";
+  addCard.style.cursor = "pointer";
+  addCard.innerHTML = `<span style="font-size:2.5em;color:#1976d2;">＋</span>`;
+  addCard.innerHTML = `
+  <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+    <span style="font-size:2.5em;color:#1976d2;line-height:1;">＋</span>
+  </div>
+`;
+  addCard.onclick = () => showProductPopup();
+  productList.appendChild(addCard);
+
+}
 // 商品登録フォームを開いたときに削除ボタンを消す
 function resetProductForm() {
   productTitle.value = "";

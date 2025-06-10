@@ -123,6 +123,7 @@ th {
 .product-card {
   position: relative;
   width: 120px;
+  height: 160px;
   background: #f5f5f5;
   border-radius: 12px;
   box-shadow: 0 2px 8px #0001;
@@ -130,6 +131,7 @@ th {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
 }
 
 .product-card img {
