@@ -251,6 +251,20 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function renderList() {
+
+  // かい子リストが空の場合は画像を表示
+  if (!items || items.length === 0) {
+    listBody.innerHTML = `
+      <tr>
+        <td colspan="4" style="text-align:center; padding:32px 0;">
+          <img src="img/noProducts.png" alt="買い物リストはありません" style="max-width:180px;">
+          <div style="color:#888;margin-top:12px;">買い物リストはありません</div>
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
   // ソート順を定義（空→悲しい→笑顔）
   const order = {
     "": 0,
@@ -1337,6 +1351,21 @@ function showReserveList(list = reserves, options = {}) {
   // 名前・状況（チェックボックス）で表示、チェック済みは行を灰色に
   const grid = panel.querySelector('.reserve-list-grid');
   if (grid) {
+
+    // 取り置きリストが空の場合のメッセージ表示
+    if (!sorted.length) {
+      grid.innerHTML = `
+    <div style="width:100%;text-align:center;margin:32px 0;">
+      <img src="img/noProducts.png" alt="取り置きリストはありません" style="max-width:180px;">
+      <div style="color:#888;margin-top:12px;">取り置きリストはありません</div>
+    </div>
+  `;
+      // メッセージ欄も非表示
+      const msgElem = panel.querySelector('.reserve-list-message');
+      if (msgElem) msgElem.style.display = 'none';
+      return;
+    }
+
     grid.innerHTML = sorted.map((r, i) => `
     <div class="reserve-list-item" style="display:flex;align-items:center;gap:12px;${r.checked ? 'background:#ccc;' : ''}">
       <span class="reserve-list-name" style="font-weight:bold;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;">
@@ -1825,6 +1854,18 @@ document.getElementById("btnSalesInfo").onclick = function () {
   Object.values(productMap).forEach(p => {
     p.originalStock = p.sold + p.currentStock;
   });
+
+  // 商品が1つもない場合は画像を表示
+  if (!products || products.length === 0) {
+    document.getElementById("salesInfoTable").innerHTML = `
+      <div style="width:100%;text-align:center;margin:32px 0;">
+        <img src="img/noProducts.png" alt="商品情報がありません" style="max-width:180px;">
+        <div style="color:#888;margin-top:12px;">商品情報がありません</div>
+      </div>
+    `;
+    document.getElementById("salesInfoTotal").textContent = "";
+    return;
+  }
 
   // 表HTML生成
   let tableHtml = `
