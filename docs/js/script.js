@@ -1048,13 +1048,30 @@ function renderCheckoutProducts() {
 
   // 商品が1つもない場合のみ noProducts.png を表示
   if (!products || products.length === 0) {
+    // ラッパーdivで中央寄せ
+    const wrapper = document.createElement("div");
+    wrapper.style.display = "flex";
+    wrapper.style.flexDirection = "column";
+    wrapper.style.alignItems = "center";
+    wrapper.style.justifyContent = "center";
+    wrapper.style.width = "100%";
+    wrapper.style.margin = "32px 0";
+
     const noProductsImg = document.createElement("img");
     noProductsImg.src = noProductsImgBase64;
     noProductsImg.alt = "商品がありません";
-    noProductsImg.style.display = "block";
-    noProductsImg.style.margin = "32px auto";
     noProductsImg.style.maxWidth = "200px";
-    grid.appendChild(noProductsImg);
+    noProductsImg.style.display = "block";
+    wrapper.appendChild(noProductsImg);
+
+    const noProductsMsg = document.createElement("div");
+    noProductsMsg.style.color = "#888";
+    noProductsMsg.style.marginTop = "12px";
+    noProductsMsg.style.fontSize = "1.1em";
+    noProductsMsg.textContent = "商品がありません";
+    wrapper.appendChild(noProductsMsg);
+
+    grid.appendChild(wrapper);
 
     // 会計ボタン非活性
     if (checkoutBtn) {
