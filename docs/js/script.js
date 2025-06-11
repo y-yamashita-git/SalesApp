@@ -918,9 +918,9 @@ function renderProductList() {
       priceTag.style.background = "#fff";
       priceTag.style.color = "#1976d2";
       priceTag.style.border = "2px solid #1976d2";
-      priceTag.style.borderRadius = "50%";
-      priceTag.style.width = "38px";
-      priceTag.style.height = "38px";
+      priceTag.style.borderRadius = "10px";
+      priceTag.style.height = "28px";
+      priceTag.style.padding = "0 0px";
       priceTag.style.display = "flex";
       priceTag.style.alignItems = "center";
       priceTag.style.justifyContent = "center";
