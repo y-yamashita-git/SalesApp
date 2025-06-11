@@ -786,6 +786,10 @@ function showProductPopup(product = null, idx = null) {
   // 登録・更新
   const btnRegister = document.getElementById("popupProductRegister");
   btnRegister.onclick = () => {
+    // 連打防止: ボタンを無効化
+    btnRegister.disabled = true;
+    btnRegister.classList.add("disabled");
+
     const title = document.getElementById("popupProductTitle").value.trim();
     const type = document.querySelector('input[name="popupProductType"]:checked').value;
     const shin = document.querySelector('input[name="popupProductShin"]:checked').value;
@@ -838,6 +842,12 @@ function showProductPopup(product = null, idx = null) {
       }
       productPopupOverlay.classList.add("hidden");
       productPopupContent.innerHTML = "";
+
+      // ボタンを再度有効化（次回のため）
+      btnRegister.disabled = false;
+      btnRegister.classList.remove("disabled");
+
+      closePopup(); // ★必ず閉じる
     }
   };
 
