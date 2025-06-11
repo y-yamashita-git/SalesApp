@@ -786,6 +786,10 @@ function showProductPopup(product = null, idx = null) {
   // 登録・更新
   const btnRegister = document.getElementById("popupProductRegister");
   btnRegister.onclick = () => {
+    // 連打防止: ボタンを無効化
+    btnRegister.disabled = true;
+    btnRegister.classList.add("disabled");
+
     const title = document.getElementById("popupProductTitle").value.trim();
     const type = document.querySelector('input[name="popupProductType"]:checked').value;
     const shin = document.querySelector('input[name="popupProductShin"]:checked').value;
@@ -838,6 +842,12 @@ function showProductPopup(product = null, idx = null) {
       }
       productPopupOverlay.classList.add("hidden");
       productPopupContent.innerHTML = "";
+
+      // ボタンを再度有効化（次回のため）
+      btnRegister.disabled = false;
+      btnRegister.classList.remove("disabled");
+
+      closePopup(); // ★必ず閉じる
     }
   };
 
@@ -918,9 +928,9 @@ function renderProductList() {
       priceTag.style.background = "#fff";
       priceTag.style.color = "#1976d2";
       priceTag.style.border = "2px solid #1976d2";
-      priceTag.style.borderRadius = "50%";
-      priceTag.style.width = "38px";
-      priceTag.style.height = "38px";
+      priceTag.style.borderRadius = "10px";
+      priceTag.style.height = "28px";
+      priceTag.style.padding = "0 0px";
       priceTag.style.display = "flex";
       priceTag.style.alignItems = "center";
       priceTag.style.justifyContent = "center";
@@ -1105,7 +1115,7 @@ function renderCheckoutProducts() {
     const count = counts[idx] || 0;
     const badge = document.createElement("span");
     badge.className = "count-badge";
-    badge.textContent = count > 0 ? count : "";
+    badge.textContent = count > 0 ? count : "＋";
     card.appendChild(badge);
 
     // マイナスボタン
@@ -1738,8 +1748,8 @@ function showReserveProductPopup(reserve = null, isKaikeiTab = false) {
         minusBtn.style.display = "flex";
         card.classList.add("selected");
       } else {
-        countBadge.textContent = "";
-        countBadge.style.display = "none";
+        countBadge.textContent = "＋";
+        countBadge.style.display = "flex";
         minusBtn.style.display = "none";
         card.classList.remove("selected");
       }
