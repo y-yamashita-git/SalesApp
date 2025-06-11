@@ -1105,7 +1105,7 @@ function renderCheckoutProducts() {
     const count = counts[idx] || 0;
     const badge = document.createElement("span");
     badge.className = "count-badge";
-    badge.textContent = count > 0 ? count : "";
+    badge.textContent = count > 0 ? count : "＋";
     card.appendChild(badge);
 
     // マイナスボタン
@@ -1738,8 +1738,8 @@ function showReserveProductPopup(reserve = null, isKaikeiTab = false) {
         minusBtn.style.display = "flex";
         card.classList.add("selected");
       } else {
-        countBadge.textContent = "";
-        countBadge.style.display = "none";
+        countBadge.textContent = "＋";
+        countBadge.style.display = "flex";
         minusBtn.style.display = "none";
         card.classList.remove("selected");
       }
