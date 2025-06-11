@@ -790,6 +790,9 @@ function showProductPopup(product = null, idx = null) {
     btnRegister.disabled = true;
     btnRegister.classList.add("disabled");
 
+    // ローディング表示
+    btnRegister.textContent = "登録中...";
+
     const title = document.getElementById("popupProductTitle").value.trim();
     const type = document.querySelector('input[name="popupProductType"]:checked').value;
     const shin = document.querySelector('input[name="popupProductShin"]:checked').value;
@@ -801,6 +804,14 @@ function showProductPopup(product = null, idx = null) {
 
     const popupProductImage = document.getElementById("popupProductImage");
     const imageFileSelected = popupProductImage.files && popupProductImage.files[0];
+
+    function closePopup() {
+      productPopupOverlay.classList.add("hidden");
+      productPopupContent.innerHTML = "";
+      btnRegister.disabled = false;
+      btnRegister.classList.remove("disabled");
+      btnRegister.textContent = product ? "更新" : "登録";
+    }
 
     if (imageFileSelected) {
       const reader = new FileReader();
